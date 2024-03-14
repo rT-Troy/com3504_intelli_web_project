@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<h1><%= title %></h1>
+
+<% data.forEach(plantsighting => { %>
+    <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
+    <p><strong>Location:</strong> Longitude: <%= plantsighting.location.coordinates[0] %>, Latitude: <%= plantsighting.location.coordinates[1] %></p>
+    <p><strong>Description:</strong> <%= plantsighting.description %></p>
+    <p><strong>Plant Height:</strong> <%= plantsighting.plantSize.height %> meters</p>
+    <p><strong>Plant Spread:</strong> <%= plantsighting.plantSize.spread %> meters</p>
+    <p><strong>Characteristics:</strong></p>
+    <ul>
+        <% if (plantsighting.plantCharacteristics.flowers) { %><li>Flowers</li><% } %>
+        <% if (plantsighting.plantCharacteristics.leaves) { %><li>Leaves</li><% } %>
+        <% if (plantsighting.plantCharacteristics.fruitsOrSeeds) { %><li>Fruits or Seeds</li><% } %>
+        <li>Sun Exposure: <%= plantsighting.plantCharacteristics.sunExposure %></li>
+        <% if (plantsighting.plantCharacteristics.flowerColor) { %><li>Flower Color: <%= plantsighting.plantCharacteristics.flowerColor %></li><% } %>
+    </ul>
+    <p><strong>Identification:</strong> <%= plantsighting.identification.name %> (<%= plantsighting.identification.status %>)</p>
+    <% if (plantsighting.photo) { %>
+        <img src="<%= plantsighting.photo %>" width="200" height="200" alt="Plant Photo">
+    <% } %>
+    <p><strong>Nickname:</strong> <%= plantsighting.nickname %></p>
+    <hr>
+<% }); %>
+<hr>
+<a href="/add"><p>Add New Plant Sighting</p></a>
+</body>
+</html>
+
+
