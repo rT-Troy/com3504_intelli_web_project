@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Define the MongoDB connection URL, including
-// the database name ('users' in this case)
+// the database name ('posts' in this case)
 const mongoDB = 'mongodb://localhost:27017/posts';
 let connection;
 
