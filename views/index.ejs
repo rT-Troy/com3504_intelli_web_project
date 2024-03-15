@@ -12,11 +12,11 @@
     <div class="container">
         <div class="row">
             <% data.forEach(plantsighting => { %>
-                <div class="col">
-                    <img src="<%= plantsighting.photo %>" class="img-thumbnail"  width="200" height="200" alt="Plant Photo">
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <a href="/display"><img src="<%= plantsighting.photo %>" class="img-thumbnail"  width="200" height="200" alt="Plant Photo"></a>
                 </div>
+            <% }); %>
         </div>
-        <% }); %>
     </div>
     <hr>
     <a href="/add"><p>Add New Plant Sighting</p></a>
