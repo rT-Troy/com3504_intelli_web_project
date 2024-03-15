@@ -18,7 +18,7 @@ var storage = multer.diskStorage({
 });
 let upload = multer({ storage: storage });
 
-router.get('/', function(req, res, next) {
+router.get('/display', function(req, res, next) {
     let result = plantsightings.getAll()
     result.then(plantsightings => {
         let data = JSON.parse(plantsightings);
@@ -29,7 +29,7 @@ router.get('/', function(req, res, next) {
         }));
 
         console.log(data.length)
-        res.render('index', { title: 'All PlantSights', data: data});
+        res.render('display', { title: 'All PlantSights', data: data});
     })
 });
 
