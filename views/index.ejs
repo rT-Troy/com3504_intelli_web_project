@@ -8,19 +8,40 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-    <h1><%= title %></h1>
-    <div class="container">
-        <div class="row">
-            <% data.forEach(plantsighting => { %>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/display"><img src="<%= plantsighting.photo %>" class="img-thumbnail"  width="200" height="200" alt="Plant Photo"></a>
+<h1><%= title %></h1>
+
+<!-- Sort Dropdown Menu -->
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form action="/" method="GET">
+                <div class="form-group">
+                    <label for="sortOrder">Sort By Date:</label>
+                    <select name="sortOrder" id="sortOrder" class="form-control" onchange="this.form.submit()">
+                        <option value="newest" <%= sortOrder === 'newest' ? 'selected' : '' %>>Date(Newest)</option>
+                        <option value="oldest" <%= sortOrder === 'oldest' ? 'selected' : '' %>>Date(Oldest)</option>
+                    </select>
                 </div>
-            <% }); %>
+            </form>
         </div>
     </div>
-    <hr>
-    <a href="/add"><p>Add New Plant Sighting</p></a>
+</div>
+
+<!-- Plant Sightings Display -->
+<div class="container">
+    <div class="row">
+        <% data.forEach(plantsighting => { %>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <a href="/display"><img src="<%= plantsighting.photo %>" class="img-thumbnail"  width="200" height="200" alt="Plant Photo"></a>
+                <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
+            </div>
+        <% }); %>
+    </div>
+</div>
+<hr>
+<a href="/add"><p>Add New Plant Sighting</p></a>
 </body>
 </html>
+
 
 

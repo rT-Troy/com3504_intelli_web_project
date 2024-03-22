@@ -31,12 +31,12 @@ exports.create = function (formData, photoPath) {
         nickname: formData.nickname
     });
 
-    // Save the student to the database and handle success or failure
+    // Save the plantsightings to the database and handle success or failure
     return plantsighting.save().then(plantsighting => {
         // Log the created student
         console.log(plantsighting);
 
-        // Return the student data as a JSON string
+        // Return the plantsightings data as a JSON string
         return JSON.stringify(plantsighting);
     }).catch(err => {
         // Log the error if saving fails
@@ -47,18 +47,22 @@ exports.create = function (formData, photoPath) {
     });
 };
 
-// Function to get all students
-exports.getAll = function () {
-    // Retrieve all students from the database
-    return plantsightingModel.find({}).then(plantsightings => {
-        // Return the list of students as a JSON string
-        return JSON.stringify(plantsightings);
-    }).catch(err => {
-        // Log the error if retrieval fails
-        console.log(err);
 
-        // Return null in case of an error
+exports.getAll = function (sortOrder = 'newest') {
+// Set the sort criteria, default is by latest date in descending order.
+    let sortQuery = {};
+    if (sortOrder === 'newest') {
+        sortQuery.dateSeen = -1; // descending order
+    } else if (sortOrder === 'oldest') {
+        sortQuery.dateSeen = 1; // Ascending order
+    }
+
+
+    return plantsightingModel.find({}).sort(sortQuery).then(plantsightings => {
+
+        return plantsightings;
+    }).catch(err => {
+        console.log(err);
         return null;
     });
 };
-

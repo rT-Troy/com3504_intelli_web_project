@@ -16,21 +16,26 @@ var storage = multer.diskStorage({
         cb(null, filename);
     }
 });
-let upload = multer({ storage: storage });
 
 router.get('/', function(req, res, next) {
-    let result = plantsightings.getAll()
-    result.then(plantsightings => {
-        let data = JSON.parse(plantsightings);
-        // Convert dateSeen from string to Date object for each plantsighting
-        data = data.map(sighting => ({
-            ...sighting,
+
+    const sortOrder = req.query.sortOrder || 'newest';
+
+    plantsightings.getAll(sortOrder).then(plantsightings => {
+
+        let data = plantsightings.map(sighting => ({
+            ...sighting.toObject(),
             dateSeen: new Date(sighting.dateSeen)
         }));
 
-        console.log(data.length)
-        res.render('index', { title: 'All PlantSights', data: data});
-    })
+        console.log(data.length);
+        res.render('index', { title: 'All PlantSights', data: data, sortOrder: sortOrder });
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send("Error retrieving plant sightings.");
+    });
 });
 
+
 module.exports = router;
+
