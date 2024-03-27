@@ -10,7 +10,7 @@
 <body>
 <h1><%= title %></h1>
 
-<% data.forEach(plantsighting => { %>
+
     <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
     <p><strong>Location:</strong> Longitude: <%= plantsighting.location.coordinates[0] %>, Latitude: <%= plantsighting.location.coordinates[1] %></p>
     <p><strong>Description:</strong> <%= plantsighting.description %></p>
@@ -26,12 +26,15 @@
     </ul>
     <p><strong>Identification:</strong> <%= plantsighting.identification.name %> (<%= plantsighting.identification.status %>)</p>
     <% if (plantsighting.photo) { %>
-        <img src="<%= plantsighting.photo %>" width="200" height="200" alt="Plant Photo">
+        <img src="/<%= plantsighting.photo %>" width="200" height="200" alt="Plant Photo">
     <% } %>
     <p><strong>Nickname:</strong> <%= plantsighting.nickname %></p>
+    <p>Photo path: <%= plantsighting.photo %></p>
     <hr>
-<% }); %>
+
 <hr>
+<a href="/display/<%= plantsighting._id %>/edit" class="btn btn-primary">Edit</a>
+
 <a href="/add"><p>Add New Plant Sighting</p></a>
 </body>
 </html>
