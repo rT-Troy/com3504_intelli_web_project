@@ -40,6 +40,19 @@
 </div>
 <hr>
 <a href="/add"><p>Add New Plant Sighting</p></a>
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if the nickname in local storage is not "Mbayoo"
+        if (localStorage.getItem('nickname') === null || localStorage.getItem('nickname') === '') {
+            // Redirect to a specific URL if the nickname is not "Mbayoo"
+            // Change 'your-redirect-url-here' to the URL you want to redirect to
+            console.log('nice');
+            window.location.href = '/nickname';
+            //res.redirect('/add');
+        }
+    });
+</script>
 </body>
 </html>
 

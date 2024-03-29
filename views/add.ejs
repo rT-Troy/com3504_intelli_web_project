@@ -12,34 +12,34 @@
     <br>
     <form action="/add" method="POST" enctype="multipart/form-data">
         <div class="row">
-<!--            first column-->
+            <!--            first column-->
             <div class="col-md-5">
-<!--                nickname-->
+                <!--                nickname-->
                 <div class="mb-3">
                     <label for="nickname" class="form-label">Nickname:</label>
-                    <input class="form-control" type="text" id="nickname" name="nickname" required>
+                    <input class="form-control" type="text" id="nickname" name="nickname" required readonly>
                 </div>
-<!--                data-->
+                <!--                data-->
                 <div class="mb-3">
                     <label for="dateSeen" class="form-label">Date Seen:</label>
                     <input class="form-control" type="date" id="dateSeen" name="dateSeen" required>
                 </div>
-<!--                photo-->
+                <!--                photo-->
                 <div class="mb-3">
                     <label for="photo" class="form-label">Photo URL:</label>
                     <input class="form-control" type="file" name="myImg" accept="image/*" required>
                 </div>
-<!--                location-->
+                <!--                location-->
                 <div class="mb-3">
                     <label for="location" class="form-label">Location (Longitude, Latitude):</label>
                     <input class="form-control" type="text" name="location" placeholder="e.g., -73.935242, 40.730610" required>
                 </div>
-<!--                identification name-->
+                <!--                identification name-->
                 <div class="mb-3">
                     <label for="identificationName" class="form-label">Identification Name:</label>
                     <input class="form-control" type="text" id="identificationName" name="identificationName" required>
                 </div>
-<!--                identification status-->
+                <!--                identification status-->
                 <div class="mb-3">
                     <label for="identificationStatus" class="form-label">Identification Status:</label>
                     <select class="form-control" type="text" id="identificationStatus" name="identificationStatus" required>
@@ -48,26 +48,26 @@
                     </select>
                 </div>
             </div>
-<!--            second column-->
+            <!--            second column-->
             <div class="col-md-7">
                 <div class="row g-3">
-<!--                    height-->
+                    <!--                    height-->
                     <div class="col-sm-6">
                         <label for="height" class="form-label">Plant Height:</label>
                         <input class="form-control" type="number" id="height" name="height" step="0.01" placeholder="In meters" required>
                     </div>
-<!--                    spread-->
+                    <!--                    spread-->
                     <div class="col-sm-6">
                         <label for="spread" class="form-label">Plant Spread:</label>
                         <input class="form-control" type="number" id="spread" name="spread" step="0.01" placeholder="In meters" required>
                     </div>
                 </div><br>
-<!--                description-->
+                <!--                description-->
                 <div class="mb-3">
                     <label for="description" class="form-label">Description:</label>
                     <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
                 </div>
-<!--                plant characteristics-->
+                <!--                plant characteristics-->
                 <div class="mb-3">
                     <label for="plantCharacteristics" class="form-label">Plant Characteristics:</label>
                     <div class="form-check">
@@ -83,7 +83,7 @@
                         <label class="form-check-label" for="fruitsOrSeeds">Fruits or Seeds</label>
                     </div>
                 </div>
-<!--                sun exposure-->
+                <!--                sun exposure-->
                 <div class="mb-3">
                     <label for="sunExposure" class="form-label">Sun Exposure:</label>
                     <select class="form-control" id="sunExposure" name="sunExposure">
@@ -97,6 +97,34 @@
         <button type="submit" class="btn btn-primary">Submit</button>
         <a class="btn btn-outline-info" href="/" role="button">View All Plant Sightings</a>
     </form>
+    <script>
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the form element
+            var form = document.querySelector('form');
+            //// Attempt to retrieve the nickname from local storage
+            var storedNickname = localStorage.getItem('nickname');
+
+            if (storedNickname) {
+                // Parse the stored nickname (since it was stored as JSON) and set it as the value of the input
+                document.getElementById('nickname').value = JSON.parse(storedNickname);
+            }
+            // Add an event listener for the form submission
+            form.addEventListener('submit', function(event) {
+                // Prevent the form from submitting immediately
+                event.preventDefault();
+
+                // Get the nickname value
+                var nickname = document.getElementById('nickname').value;
+
+                // Store the nickname in local storage
+                localStorage.setItem('nickname', JSON.stringify(nickname));
+
+                // Continue with the form submission
+                form.submit();
+            });
+        });
+    </script>
 </div>
 </body>
 </html>
