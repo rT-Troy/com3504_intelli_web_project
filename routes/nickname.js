@@ -11,7 +11,7 @@ router.get('/nickname', function(req, res) {
 // Handling form submission
 router.post('/nickname', function(req, res) {
     // After processing, you can redirect or send a response
-    res.redirect('/add'); // or res.send('Nickname saved!');
+    res.redirect('/'); // or res.send('Nickname saved!');
 });
 
 module.exports = router;
