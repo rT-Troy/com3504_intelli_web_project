@@ -105,5 +105,45 @@
 
 </div>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var storedNickname = JSON.parse(localStorage.getItem('nickname'));
+        // Ensure both are strings and trim any whitespace
+        var localNickname = storedNickname ? storedNickname.trim() : '';
+        var serverNickname = "<%= plantsighting.nickname %>".trim();
+
+        // Optionally, convert both to lowercase to ignore case differences
+        localNickname = localNickname.toLowerCase();
+        serverNickname = serverNickname.toLowerCase();
+        console.log("Local Nickname: ", localNickname);
+        console.log("Server Nickname: ", serverNickname);
+
+        if (localNickname !== serverNickname || localNickname === '') {
+            var message = "The nickname does not match or is not set. You will be redirected to the homepage.";
+
+            // Create a div element to display the message
+            var messageDiv = document.createElement('div');
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.left = '0';
+            messageDiv.style.right = '0';
+            messageDiv.style.top = '0';
+            messageDiv.style.backgroundColor = 'red';
+            messageDiv.style.color = 'white';
+            messageDiv.style.textAlign = 'center';
+            messageDiv.style.padding = '10px';
+            messageDiv.style.fontSize = '20px';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.innerText = message;
+
+            // Append the message div to the body
+            document.body.appendChild(messageDiv);
+
+            setTimeout(function() {
+                window.location.href = '/display/<%= plantsighting._id %>';
+            }, 100);
+        }
+    });
+</script>
 </html>
 
