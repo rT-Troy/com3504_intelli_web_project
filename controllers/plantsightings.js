@@ -1,8 +1,10 @@
 // Import the student model
 const plantsightingModel = require('../models/plantsightings');
 
-// Function to create new students
+// Function to create new plantsighting
 exports.create = function (formData, photoPath) {
+    // Adjust the photo path to be stored in the database
+    const adjustedPhotoPath = photoPath.replace(/\\/g, '/').replace('public/', '');
     // Create a new student instance using the provided user data
     let plantsighting = new plantsightingModel({
         dateSeen: formData.dateSeen,
@@ -27,7 +29,7 @@ exports.create = function (formData, photoPath) {
             status: formData.identificationStatus,
             dbpediaUri: formData.dbpediaUri
         },
-        photo: photoPath,
+        photo: adjustedPhotoPath,
         nickname: formData.nickname
     });
 
@@ -43,6 +45,19 @@ exports.create = function (formData, photoPath) {
         console.log(err);
 
         // Return null in case of an error
+        return null;
+    });
+};
+
+
+exports.getOne = function(id) {
+
+    return plantsightingModel.findById(id).then(plantsighting => {
+
+        return plantsighting;
+    }).catch(err => {
+
+        console.log(err);
         return null;
     });
 };
@@ -64,5 +79,15 @@ exports.getAll = function (sortOrder = 'newest') {
     }).catch(err => {
         console.log(err);
         return null;
+    });
+};
+
+exports.updateOne = function(id, updatedData) {
+    return plantsightingModel.findByIdAndUpdate(id, updatedData, { new: true }).then(updatedPlantsighting => {
+        console.log('Updated Plant Sighting:', updatedPlantsighting);
+        return updatedPlantsighting;
+    }).catch(err => {
+        console.error('Error updating plant sighting:', err);
+        throw err;
     });
 };

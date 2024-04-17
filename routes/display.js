@@ -18,19 +18,92 @@ var storage = multer.diskStorage({
 });
 let upload = multer({ storage: storage });
 
-router.get('/display', function(req, res, next) {
-    let result = plantsightings.getAll()
-    result.then(plantsightings => {
-        let data = JSON.parse(plantsightings);
-        // Convert dateSeen from string to Date object for each plantsighting
-        data = data.map(sighting => ({
-            ...sighting,
-            dateSeen: new Date(sighting.dateSeen)
-        }));
 
-        console.log(data.length)
-        res.render('display', { title: 'All PlantSights', data: data});
-    })
+router.get('/display/:id', function(req, res, next) {
+    const id = req.params.id;
+
+    plantsightings.getOne(id).then(plantsighting => {
+        if (plantsighting) {
+
+            plantsighting.dateSeen = new Date(plantsighting.dateSeen);
+
+            res.render('display', {
+                title: 'Plant Sighting Details',
+                plantsighting: plantsighting
+            });
+        } else {
+
+            res.status(404).send('Plant sighting not found');
+        }
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send("Error retrieving plant sighting.");
+    });
+});
+
+router.get('/display/:id/edit', function(req, res, next) {
+    const id = req.params.id;
+
+    plantsightings.getOne(id).then(plantsighting => {
+        if (!plantsighting) {
+            return res.status(404).send('Plant sighting not found');
+        }
+
+        res.render('edit', {
+            title: 'Edit Plant Sighting',
+            plantsighting: plantsighting
+        });
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send("Error retrieving plant sighting for edit.");
+    });
+});
+
+
+router.post('/display/:id/update', upload.single('myImg'), function(req, res, next) {
+    const id = req.params.id;
+    const updatedData = {
+        dateSeen: req.body.dateSeen,
+        description: req.body.description,
+        plantSize: {
+            height: req.body.height,
+            spread: req.body.spread,
+        },
+        plantCharacteristics: {
+            flowers: req.body.flowers === 'on',
+            leaves: req.body.leaves === 'on',
+            fruitsOrSeeds: req.body.fruitsOrSeeds === 'on',
+            sunExposure: req.body.sunExposure,
+            flowerColor: req.body.flowerColor,
+        },
+        identification: {
+            status: req.body.identificationStatus,
+        },
+        nickname: req.body.nickname,
+
+    };
+
+
+    if(req.body.location) {
+        const coordinates = req.body.location.split(',').map(Number);
+        updatedData.location = {
+            type: "Point",
+            coordinates: coordinates,
+        };
+    }
+
+
+    if(req.file) {
+        const adjustedPhotoPath = req.file.path.replace(/\\/g, '/').replace('public/', '');
+        updatedData.photo = adjustedPhotoPath;
+    }
+
+    plantsightings.updateOne(id, updatedData).then(() => {
+        res.redirect('/display/' + id); // Successful update redirects to plant observation record details page
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send("Error updating plant sighting.");
+    });
 });
 
 module.exports = router;
