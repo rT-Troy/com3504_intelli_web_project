@@ -5,6 +5,10 @@ const plantsightingModel = require('../models/plantsightings');
 exports.create = function (formData, photoPath) {
     // Adjust the photo path to be stored in the database
     const adjustedPhotoPath = photoPath.replace(/\\/g, '/').replace('public/', '');
+    const name = formData.identificationName.trim();  // Ensure to trim to remove any accidental whitespace
+
+    // Adjust the identification status based on the presence of the name
+    const status = name ? 'completed' : 'in-progress';
     // Create a new student instance using the provided user data
     let plantsighting = new plantsightingModel({
         dateSeen: formData.dateSeen,
@@ -25,8 +29,8 @@ exports.create = function (formData, photoPath) {
             flowerColor: formData.flowerColor
         },
         identification: {
-            name: formData.identificationName,
-            status: formData.identificationStatus,
+            name: name,
+            status: status,
             dbpediaUri: formData.dbpediaUri
         },
         photo: adjustedPhotoPath,

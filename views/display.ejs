@@ -23,12 +23,11 @@
         <li>Sun Exposure: <%= plantsighting.plantCharacteristics.sunExposure %></li>
         <% if (plantsighting.plantCharacteristics.flowerColor) { %><li>Flower Color: <%= plantsighting.plantCharacteristics.flowerColor %></li><% } %>
     </ul>
-    <p><strong>Identification:</strong> <%= plantsighting.identification.name %> (<%= plantsighting.identification.status %>)</p>
     <% if (plantsighting.photo) { %>
         <img src="/<%= plantsighting.photo %>" width="200" height="200" alt="Plant Photo">
     <% } %>
-    <p><strong>Nickname:</strong> <%= plantsighting.nickname %></p>
-    <p>Photo path: <%= plantsighting.photo %></p>
+    <p><strong>Create by:</strong> <%= plantsighting.nickname %></p>
+    <p><strong>Status:</strong> <%= plantsighting.identification.status %></p>
 <hr>
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest a Name</button>
 

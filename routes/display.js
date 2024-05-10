@@ -32,15 +32,16 @@
             // Adjust the dateSeen property to be a Date object
             plantsighting.dateSeen = new Date(plantsighting.dateSeen);
 
+
             // Prepare variables for the render function
             const title = plantsighting.identification.status === 'in-progress' ?
-                "In progress" :
+                "In progress (suggest a name)" :
                 plantsighting.identification.name;
 
             // Render the template with the prepared variables
             res.render('display', {
                 title: title,
-                plantsighting: plantsighting
+                plantsighting: plantsighting,
             });
 
         }).catch(err => {
