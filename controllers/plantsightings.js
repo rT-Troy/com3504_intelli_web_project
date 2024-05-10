@@ -62,6 +62,23 @@ exports.getOne = function(id) {
     });
 };
 
+exports.getSuggestions = function(id) {
+    return plantsightingModel.findById(id).then(plantsighting => {
+        if (!plantsighting) {
+            throw new Error('No plant sighting found with the given ID');
+        }
+        // Check if the suggest_nickname array exists and return it
+        if (plantsighting.suggest_nickname && plantsighting.suggest_nickname.length > 0) {
+            return plantsighting.suggest_nickname;
+        } else {
+            // If there are no suggestions, return a default value or an empty array
+            return [];
+        }
+    }).catch(err => {
+        console.log(err);
+        return []; // Return an empty array in case of an error
+    });
+};
 
 exports.getAll = function (sortOrder = 'newest') {
 // Set the sort criteria, default is by latest date in descending order.
@@ -82,12 +99,28 @@ exports.getAll = function (sortOrder = 'newest') {
     });
 };
 
-exports.updateOne = function(id, updatedData) {
-    return plantsightingModel.findByIdAndUpdate(id, updatedData, { new: true }).then(updatedPlantsighting => {
-        console.log('Updated Plant Sighting:', updatedPlantsighting);
-        return updatedPlantsighting;
+exports.addSuggestName = function(id, name) {
+    return plantsightingModel.findByIdAndUpdate(id, {
+        $push: { suggest_name: name }
+    }, { new: true }).then(updatedDocument => {
+        return updatedDocument;
     }).catch(err => {
-        console.error('Error updating plant sighting:', err);
+        console.error('Error updating plant sighting with new suggested name:', err);
+        throw err;
+    });
+};
+
+exports.updateIdentificationName = function(id, newName) {
+    return plantsightingModel.findByIdAndUpdate(id, {
+        'identification.name': newName,
+        'identification.status': 'completed' // Update status if necessary
+    }, { new: true }).then(updatedDocument => {
+        if (!updatedDocument) {
+            throw new Error('No document found with the given ID');
+        }
+        return updatedDocument;
+    }).catch(err => {
+        console.error('Error updating plant sighting name:', err);
         throw err;
     });
 };
