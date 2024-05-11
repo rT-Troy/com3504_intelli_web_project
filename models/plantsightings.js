@@ -38,6 +38,7 @@ let PlantSightingSchema = new Schema(
         },
         photo: { type: String },
         nickname: { type: String },
+        suggest_name: { type: Array },
         // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
     }
 );
