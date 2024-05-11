@@ -25,14 +25,32 @@ document.addEventListener('DOMContentLoaded', function () {
         $('#cameraModal').modal('hide');
     });
 
+    // function uploadImage(imageData) {
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open('POST', '/upload-image', true);
+    //     xhr.setRequestHeader('Content-Type', 'application/json');
+    //     xhr.onload = function () {
+    //         if (xhr.status === 200) {
+    //             console.log('Image uploaded successfully');
+    //             alert("Image uploaded successfully!");
+    //         } else {
+    //             console.error('Error uploading image');
+    //             alert("Failed to upload image.");
+    //         }
+    //     };
+    //     xhr.send(JSON.stringify({ image: imageData }));
+    // }
+
     function uploadImage(imageData) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/upload-image', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function () {
             if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
                 console.log('Image uploaded successfully');
-                alert("Image uploaded successfully!");
+                document.getElementById('imageFilename').innerHTML = `<span style="color:green;">${response.filename}</span>`;
+                document.getElementById('photoPath').value = response.path;
             } else {
                 console.error('Error uploading image');
                 alert("Failed to upload image.");
@@ -40,5 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         xhr.send(JSON.stringify({ image: imageData }));
     }
+
 });
 

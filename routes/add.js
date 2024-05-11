@@ -50,6 +50,35 @@ router.post('/add', upload.single('myImg'), function (req, res, next) {
   });
 });
 
+// router.post('/upload-image', function(req, res) {
+//   let imageData = req.body.image;
+//   if (!imageData) {
+//     return res.status(400).send('No image data received');
+//   }
+//
+//   const base64Data = imageData.replace(/^data:image\/\w+;base64,/, "");
+//   const buffer = Buffer.from(base64Data, 'base64');
+//   const uploadsDir = path.join(__dirname, '../public/images/uploads');
+//
+//   // Ensure the directory exists
+//   fs.mkdir(uploadsDir, { recursive: true }, (err) => {
+//     if (err) {
+//       return res.status(500).send('Failed to create directory');
+//     }
+//
+//     const filename = `upload-${Date.now()}.png`;
+//     const filePath = path.join(uploadsDir, filename);
+//
+//     fs.writeFile(filePath, buffer, function(err) {
+//       if (err) {
+//         console.error('Error saving image!', err);
+//         return res.sendStatus(500);
+//       }
+//       res.send({ path: filePath });
+//     });
+//   });
+// });
+
 router.post('/upload-image', function(req, res) {
   let imageData = req.body.image;
   if (!imageData) {
@@ -60,7 +89,6 @@ router.post('/upload-image', function(req, res) {
   const buffer = Buffer.from(base64Data, 'base64');
   const uploadsDir = path.join(__dirname, '../public/images/uploads');
 
-  // Ensure the directory exists
   fs.mkdir(uploadsDir, { recursive: true }, (err) => {
     if (err) {
       return res.status(500).send('Failed to create directory');
@@ -74,9 +102,10 @@ router.post('/upload-image', function(req, res) {
         console.error('Error saving image!', err);
         return res.sendStatus(500);
       }
-      res.send({ path: filePath });
+      res.send({ path: filePath, filename: filename });
     });
   });
 });
+
 
 module.exports = router;
