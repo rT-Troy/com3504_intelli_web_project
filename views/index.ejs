@@ -24,6 +24,24 @@
             </form>
         </div>
     </div>
+    <div class="container">
+        <form action="/" method="GET">
+            <div class="row">
+                <!-- Existing filters here -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="status">Identification Status:</label>
+                        <select name="status" id="status" class="form-control" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                            <option value="in-progress" <%= filters.status === 'in-progress' ? 'selected' : '' %>>In Progress</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- End of new filter for status -->
+            </div>
+        </form>
+    </div>
     <!-- Filtering Menu for Flower -->
     <div class="container">
         <!-- Flower Filter -->
@@ -79,41 +97,44 @@
 </div>
 <hr>
 <a href="/add"><p>Add New Plant Sighting</p></a>
-<script>
-    // Wait for the DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        var request = indexedDB.open('MyDatabase', 1);  // Open the IndexedDB
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dbRequest = indexedDB.open('MyDatabase', 1);
 
-        request.onerror = function(event) {
-            console.error("IndexedDB error:", event.target.errorCode);
-        };
+            dbRequest.onsuccess = function(event) {
+                var db = event.target.result;
+                var transaction = db.transaction('nicknames', 'readonly');
+                var store = transaction.objectStore('nicknames');
+                var getRequest = store.get('userNickname');
 
-        request.onsuccess = function(event) {
-            var db = event.target.result;  // Successfully opened the database
-            var tx = db.transaction('nicknames', 'readonly');  // Start a read-only transaction
-            var store = tx.objectStore('nicknames');  // Access your 'nicknames' object store
-            var getRequest = store.get('userNickname');  // Get the 'userNickname' from the store
-
-            getRequest.onsuccess = function() {
-                if (getRequest.result === undefined || getRequest.result.nickname === '') {
-                    // If the 'userNickname' does not exist or the nickname is an empty string
-                    console.log('Redirecting because no valid nickname exists.');
-                    window.location.href = '/nickname';  // Redirect to the nickname page
-                } else {
-                    console.log('Nickname exists:', getRequest.result.nickname);  // Optionally log the found nickname
-                }
+                getRequest.onsuccess = function() {
+                    var userNickname = getRequest.result ? getRequest.result.nickname : '';
+                    var myPlantsButton = document.getElementById('myPlants');
+                    if (userNickname && myPlantsButton) {
+                        myPlantsButton.addEventListener('click', function() {
+                            window.location.href = `/?nickname=${userNickname}`;
+                        });
+                    }
+                };
             };
 
-            getRequest.onerror = function(event) {
-                console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
-            };
+            // Event listener for the "Show All Plants" button
+            var showAllButton = document.getElementById('showAll');
+            if (showAllButton) {
+                showAllButton.addEventListener('click', function() {
+                    window.location.href = '/';
+                });
+            }
+        });
+    </script>
 
-            tx.oncomplete = function() {
-                db.close();  // Close the db when the transaction is done
-            };
-        };
-    });
-</script>
+
+    <div class="container">
+        <button id="myPlants" class="btn btn-primary">Show My Plants</button>
+        <button id="showAll" class="btn btn-secondary">Show All Plants</button>
+    </div>
+
+
 
 </body>
 </html>

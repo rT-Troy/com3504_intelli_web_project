@@ -22,7 +22,9 @@ router.get('/', function(req, res, next) {
         flowers: req.query.flowers,
         leaves: req.query.leaves,
         fruitsOrSeeds: req.query.fruitsOrSeeds,
-        sunExposure: req.query.sunExposure
+        sunExposure: req.query.sunExposure,
+        status: req.query.status,
+        nickname: req.query.nickname  // Accept nickname from the query string
     };
     const sortOrder = req.query.sortOrder || 'newest';
 
