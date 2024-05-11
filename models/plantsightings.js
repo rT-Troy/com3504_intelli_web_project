@@ -3,7 +3,7 @@ let mongoose = require('mongoose');
 // Get the Schema class from mongoose
 let Schema = mongoose.Schema;
 
-// Define the schema for the Student model
+// Define the schema for the Plant Sighting model
 let PlantSightingSchema = new Schema(
     {
         dateSeen: { type: Date, required: true },
@@ -39,7 +39,7 @@ let PlantSightingSchema = new Schema(
         photo: { type: String },
         nickname: { type: String },
         suggest_name: { type: Array },
-        // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
+        //messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }]
     }
 );
 

@@ -1,15 +1,14 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+let mongoose = require('mongoose');
 
-// Define the schema for the Message model
-const MessageSchema = new Schema({
-    plantId: { type: Schema.Types.ObjectId, ref: 'PlantSighting', required: true }, // Reference to the PlantSighting model
+let Schema = mongoose.Schema;
+
+let messageSchema = new mongoose.Schema({
     text: { type: String, required: true },
-    nickname: { type: String, required: true }
+    user: { type: String, required: true }, // Reference to user who posted the comment
+    createdAt: { type: Date, default: Date.now },
+    plantSighting: { type: String, required: true }
 });
 
-// Create the mongoose model 'Comment' based on the defined schema
-const Message = mongoose.model('Message', MessageSchema);
+let Message = mongoose.model('Message', messageSchema);
 
-// Export the Comment model for use in other modules
 module.exports = Message;
