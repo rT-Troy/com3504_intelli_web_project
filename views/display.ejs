@@ -94,43 +94,65 @@
 <a href="/add"><p>Add New Plant Sighting</p></a>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var storedNickname = JSON.parse(localStorage.getItem('nickname'));
-        // Ensure both are strings and trim any whitespace
-        var localNickname = storedNickname ? storedNickname.trim() : '';
-        var serverNickname = "<%= plantsighting.nickname %>".trim();
+        var request = indexedDB.open('MyDatabase', 1);  // Open the IndexedDB
 
-        // Optionally, convert both to lowercase to ignore case differences
-        localNickname = localNickname.toLowerCase();
-        serverNickname = serverNickname.toLowerCase();
-        console.log("Local Nickname: ", localNickname);
-        console.log("Server Nickname: ", serverNickname);
+        request.onerror = function(event) {
+            console.error("IndexedDB error:", event.target.errorCode);
+        };
 
-        if (localNickname !== serverNickname || localNickname === '') {
-            var message = "The nickname does not match or is not set. You will be redirected to the homepage.";
+        request.onsuccess = function(event) {
+            var db = event.target.result;
+            var tx = db.transaction('nicknames', 'readonly');
+            var store = tx.objectStore('nicknames');
+            var getRequest = store.get('userNickname');  // Get the 'userNickname' from the store
 
-            // Create a div element to display the message
-            var messageDiv = document.createElement('div');
-            messageDiv.style.position = 'fixed';
-            messageDiv.style.left = '0';
-            messageDiv.style.right = '0';
-            messageDiv.style.top = '0';
-            messageDiv.style.backgroundColor = 'red';
-            messageDiv.style.color = 'white';
-            messageDiv.style.textAlign = 'center';
-            messageDiv.style.padding = '10px';
-            messageDiv.style.fontSize = '20px';
-            messageDiv.style.zIndex = '1000';
-            messageDiv.innerText = message;
+            getRequest.onsuccess = function() {
+                // Get the stored nickname and compare it to the server nickname
+                var storedNickname = getRequest.result ? getRequest.result.nickname : '';
+                var serverNickname = "<%= plantsighting.nickname %>".trim().toLowerCase();  // Assuming this value is dynamically injected by the server
 
-            // Append the message div to the body
-            document.body.appendChild(messageDiv);
+                // Ensure both are strings and trim any whitespace
+                var localNickname = storedNickname.trim().toLowerCase();
+                console.log("Local Nickname: ", localNickname);
+                console.log("Server Nickname: ", serverNickname);
 
-            setTimeout(function() {
-                window.location.href = '/';
-            }, 5000);
-        }
+                if (localNickname !== serverNickname || localNickname === '') {
+                    var message = "The nickname does not match or is not set. You will be redirected to the homepage.";
+
+                    // Create a div element to display the message
+                    var messageDiv = document.createElement('div');
+                    messageDiv.style.position = 'fixed';
+                    messageDiv.style.left = '0';
+                    messageDiv.style.right = '0';
+                    messageDiv.style.top = '0';
+                    messageDiv.style.backgroundColor = 'red';
+                    messageDiv.style.color = 'white';
+                    messageDiv.style.textAlign = 'center';
+                    messageDiv.style.padding = '10px';
+                    messageDiv.style.fontSize = '20px';
+                    messageDiv.style.zIndex = '1000';
+                    messageDiv.innerText = message;
+
+                    // Append the message div to the body
+                    document.body.appendChild(messageDiv);
+
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 5000);
+                }
+            };
+
+            getRequest.onerror = function(event) {
+                console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
+            };
+
+            tx.oncomplete = function() {
+                db.close();  // Close the db when the transaction is done
+            };
+        };
     });
 </script>
+
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

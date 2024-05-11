@@ -42,16 +42,39 @@
 <script>
     // Wait for the DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
-        // Check if the nickname in local storage is not "Mbayoo"
-        if (localStorage.getItem('nickname') === null || localStorage.getItem('nickname') === '') {
-            // Redirect to a specific URL if the nickname is not "Mbayoo"
-            // Change 'your-redirect-url-here' to the URL you want to redirect to
-            console.log('nice');
-            window.location.href = '/nickname';
-            //res.redirect('/add');
-        }
+        var request = indexedDB.open('MyDatabase', 1);  // Open the IndexedDB
+
+        request.onerror = function(event) {
+            console.error("IndexedDB error:", event.target.errorCode);
+        };
+
+        request.onsuccess = function(event) {
+            var db = event.target.result;  // Successfully opened the database
+            var tx = db.transaction('nicknames', 'readonly');  // Start a read-only transaction
+            var store = tx.objectStore('nicknames');  // Access your 'nicknames' object store
+            var getRequest = store.get('userNickname');  // Get the 'userNickname' from the store
+
+            getRequest.onsuccess = function() {
+                if (getRequest.result === undefined || getRequest.result.nickname === '') {
+                    // If the 'userNickname' does not exist or the nickname is an empty string
+                    console.log('Redirecting because no valid nickname exists.');
+                    window.location.href = '/nickname';  // Redirect to the nickname page
+                } else {
+                    console.log('Nickname exists:', getRequest.result.nickname);  // Optionally log the found nickname
+                }
+            };
+
+            getRequest.onerror = function(event) {
+                console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
+            };
+
+            tx.oncomplete = function() {
+                db.close();  // Close the db when the transaction is done
+            };
+        };
     });
 </script>
+
 </body>
 </html>
 
