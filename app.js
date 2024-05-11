@@ -9,7 +9,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/posts');
 var addRouter = require('./routes/add');
 var displayRouter = require('./routes/display');
-const bodyParser = require('body-parser');
 
 var app = express();
 
