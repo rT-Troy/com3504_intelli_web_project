@@ -84,7 +84,7 @@ exports.getSuggestions = function(id) {
     });
 };
 
-exports.getAllFiltered = function(sortOrder = 'newest', filter = {}) {
+exports.getAllFiltered = function(filters = {}, sortOrder = 'newest') {
     let sortQuery = {};
     if (sortOrder === 'newest') {
         sortQuery.dateSeen = -1; // Descending order
@@ -92,13 +92,29 @@ exports.getAllFiltered = function(sortOrder = 'newest', filter = {}) {
         sortQuery.dateSeen = 1; // Ascending order
     }
 
-    return plantsightingModel.find(filter).sort(sortQuery).then(plantsightings => {
+    // Build query based on filters received
+    let query = {};
+    if (filters.flowers) {
+        query['plantCharacteristics.flowers'] = filters.flowers === 'true';
+    }
+    if (filters.leaves) {
+        query['plantCharacteristics.leaves'] = filters.leaves === 'true';
+    }
+    if (filters.fruitsOrSeeds) {
+        query['plantCharacteristics.fruitsOrSeeds'] = filters.fruitsOrSeeds === 'true';
+    }
+    if (filters.sunExposure) {
+        query['plantCharacteristics.sunExposure'] = filters.sunExposure;
+    }
+
+    return plantsightingModel.find(query).sort(sortQuery).then(plantsightings => {
         return plantsightings;
     }).catch(err => {
         console.log(err);
         return null;
     });
 };
+
 
 
 exports.addSuggestName = function(id, name) {

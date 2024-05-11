@@ -25,29 +25,46 @@
         </div>
     </div>
     <!-- Filtering Menu for Flower -->
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <form action="/" method="GET">
-                <div class="form-group">
-                    <label for="flowerFilter">Show Plants With:</label>
-                    <select name="flowerFilter" id="flowerFilter" class="form-control" onchange="this.form.submit()">
-                        <option value="all">All</option>
-                        <option value="flowers" <%= flowerFilter === 'flowers' ? 'selected' : '' %>>Flowers</option>
-                        <option value="noFlowers" <%= flowerFilter === 'noFlowers' ? 'selected' : '' %>>No Flowers</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="sortOrder">Sort By Date:</label>
-                    <select name="sortOrder" id="sortOrder" class="form-control" onchange="this.form.submit()">
-                        <option value="newest" <%= sortOrder === 'newest' ? 'selected' : '' %>>Date(Newest)</option>
-                        <option value="oldest" <%= sortOrder === 'oldest' ? 'selected' : '' %>>Date(Oldest)</option>
-                    </select>
-                </div>
-            </form>
-        </div>
+    <div class="container">
+        <!-- Flower Filter -->
+        <form action="/" method="GET">
+            <div class="form-group">
+                <label for="flowers">Flowers:</label>
+                <select name="flowers" id="flowers" class="form-control" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <option value="true" <%= filters.flowers === 'true' ? 'selected' : '' %>>With Flowers</option>
+                    <option value="false" <%= filters.flowers === 'false' ? 'selected' : '' %>>Without Flowers</option>
+                </select>
+            </div>
+            <!-- Additional filters for leaves, fruits or seeds, and sun exposure -->
+            <div class="form-group">
+                <label for="leaves">Leaves:</label>
+                <select name="leaves" id="leaves" class="form-control" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <option value="true" <%= filters.leaves === 'true' ? 'selected' : '' %>>With Leaves</option>
+                    <option value="false" <%= filters.leaves === 'false' ? 'selected' : '' %>>Without Leaves</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fruitsOrSeeds">Fruits/Seeds:</label>
+                <select name="fruitsOrSeeds" id="fruitsOrSeeds" class="form-control" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <option value="true" <%= filters.fruitsOrSeeds === 'true' ? 'selected' : '' %>>With Fruits/Seeds</option>
+                    <option value="false" <%= filters.fruitsOrSeeds === 'false' ? 'selected' : '' %>>Without Fruits/Seeds</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sunExposure">Sun Exposure:</label>
+                <select name="sunExposure" id="sunExposure" class="form-control" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <option value="full sun" <%= filters.sunExposure === 'full sun' ? 'selected' : '' %>>Full Sun</option>
+                    <option value="partial shade" <%= filters.sunExposure === 'partial shade' ? 'selected' : '' %>>Partial Shade</option>
+                    <option value="full shade" <%= filters.sunExposure === 'full shade' ? 'selected' : '' %>>Full Shade</option>
+                </select>
+            </div>
+        </form>
     </div>
-</div>
+
 
 <!-- Plant Sightings Display -->
 <div class="container">

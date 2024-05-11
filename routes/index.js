@@ -18,28 +18,32 @@ var storage = multer.diskStorage({
 });
 
 router.get('/', function(req, res, next) {
+    let filters = {
+        flowers: req.query.flowers,
+        leaves: req.query.leaves,
+        fruitsOrSeeds: req.query.fruitsOrSeeds,
+        sunExposure: req.query.sunExposure
+    };
     const sortOrder = req.query.sortOrder || 'newest';
-    const flowerFilter = req.query.flowerFilter || 'all';
 
-    let queryOptions = {};
-    if (flowerFilter === 'flowers') {
-        queryOptions['plantCharacteristics.flowers'] = true;
-    } else if (flowerFilter === 'noFlowers') {
-        queryOptions['plantCharacteristics.flowers'] = false;
-    }
-
-    plantsightings.getAllFiltered(sortOrder, queryOptions).then(plantsightings => {
+    plantsightings.getAllFiltered(filters, sortOrder).then(plantsightings => {
         let data = plantsightings.map(sighting => ({
             ...sighting.toObject(),
             dateSeen: new Date(sighting.dateSeen)
         }));
 
-        res.render('index', { title: 'All PlantSights', data: data, sortOrder: sortOrder, flowerFilter: flowerFilter });
+        res.render('index', {
+            title: 'All PlantSights',
+            data: data,
+            sortOrder: sortOrder,
+            filters: filters
+        });
     }).catch(err => {
         console.error(err);
         res.status(500).send("Error retrieving plant sightings.");
     });
 });
+
 
 
 module.exports = router;
