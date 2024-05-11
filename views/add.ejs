@@ -28,12 +28,12 @@
                 <!-- Add to your existing form in the file where 'add' template is defined -->
                 <div class="mb-3">
                     <label for="photo" class="form-label">Photo URL:</label>
-                    <input class="form-control" type="file" name="myImg" id="myImg" accept="image/*" required>
-                    <label for="photo" class="form-label">Photo:</label>
-                    <video id="video" width="320" height="240" autoplay></video>
-                    <button type="button" id="snap">Capture</button> <!-- Changed to type="button" -->
-                    <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-                    <input type="hidden" name="photo" id="photo">
+                    <div class="input-group mb-3">
+                        <input class="form-control" type="file" name="myImg" id="myImg" accept="image/*">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#cameraModal">
+                            Capture Photo
+                        </button>
+                    </div>
                 </div>
 
 
@@ -46,6 +46,7 @@
                         <button type="button" class="btn btn-secondary" id="getLocation">Get Location</button>
                         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#mapModal">Choose from Map</button>
                     </div>
+                    <input type="hidden" name="photo" id="photo">
                 </div>
 
                 <!--                identification name-->
@@ -120,6 +121,22 @@
     </div>
 </div>
 
+<!-- Camera Modal -->
+<div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cameraModalLabel">Capture Photo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <video id="video" width="100%" height="auto" autoplay></video>
+                <button type="button" id="capture" class="btn btn-primary">Capture</button>
+                <canvas id="canvas" style="display:none;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/javascripts/camera.js"></script>
