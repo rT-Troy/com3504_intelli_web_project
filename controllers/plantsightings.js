@@ -84,24 +84,22 @@ exports.getSuggestions = function(id) {
     });
 };
 
-exports.getAll = function (sortOrder = 'newest') {
-// Set the sort criteria, default is by latest date in descending order.
+exports.getAllFiltered = function(sortOrder = 'newest', filter = {}) {
     let sortQuery = {};
     if (sortOrder === 'newest') {
-        sortQuery.dateSeen = -1; // descending order
+        sortQuery.dateSeen = -1; // Descending order
     } else if (sortOrder === 'oldest') {
         sortQuery.dateSeen = 1; // Ascending order
     }
 
-
-    return plantsightingModel.find({}).sort(sortQuery).then(plantsightings => {
-
+    return plantsightingModel.find(filter).sort(sortQuery).then(plantsightings => {
         return plantsightings;
     }).catch(err => {
         console.log(err);
         return null;
     });
 };
+
 
 exports.addSuggestName = function(id, name) {
     return plantsightingModel.findByIdAndUpdate(id, {
