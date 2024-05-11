@@ -46,6 +46,7 @@ router.post('/add', upload.single('myImg'), function (req, res, next) {
     let photoPath = req.file.path;
     let result = plantsightings.create(formData, photoPath);
     console.log(result);
+    console.log("/add"+req.body);
     res.redirect('/');
   });
 });
@@ -103,7 +104,10 @@ router.post('/upload-image', function(req, res) {
         return res.sendStatus(500);
       }
       res.send({ path: filePath, filename: filename });
+      console.log("/upload-image"+req.body);
     });
+
+
   });
 });
 
