@@ -35,7 +35,7 @@ router.get('/add', function(req, res, next) {
 //   console.log(result);
 //   res.redirect('/add');
 // });
-router.post('/add', function (req, res, next) {
+router.post('/add', upload.single('myImg'), function (req, res, next) {
   let photoData = req.body.photo;
 
   if (!photoData) {
@@ -54,10 +54,10 @@ router.post('/add', function (req, res, next) {
       return res.sendStatus(500);
     }
     let formData = req.body;
-    let photoPath = 'images/uploads/' + Date.now() + '.png';
+    let photoPath = req.file.path;
     let result = plantsightings.create(formData, photoPath);
     console.log(result);
-    res.redirect('/add');
+    res.redirect('/');
   });
 });
 
