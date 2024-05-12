@@ -23,11 +23,19 @@ document.addEventListener('DOMContentLoaded', function () {
     snapButton.addEventListener('click', function() {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         var imageData = canvas.toDataURL('image/png');
-
-
+        console.log("image data:", imageData.substr(0, 100));
         document.getElementById('photo').value = imageData;
+        console.log("Image data has been stored in hidden fields")
 
+        var imagePreview = document.getElementById('imagePreview');
+        if (imagePreview) {
+            imagePreview.src = imageData;
+            imagePreview.style.display = 'block';
+        }
+
+        document.getElementById('status').textContent = 'The image has been captured and is ready for submission.';
     });
+
 
 
     $('#cameraModal').on('hide.bs.modal', function () {

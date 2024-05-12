@@ -25,7 +25,6 @@
                     <input class="form-control" type="date" id="dateSeen" name="dateSeen" required>
                 </div>
 
-                 Add to your existing form in the file where 'add' template is defined
                 <div class="mb-3">
                     <label for="photo" class="form-label">Photo URL:</label>
                     <div class="input-group mb-3">
@@ -34,6 +33,9 @@
                             Capture Photo
                         </button>
                     </div>
+                    <img id="imagePreview" style="display:none; width: 100%; max-width: 640px; height: auto;" />
+                    <p id="status"></p>
+
                     <input type="hidden" id="photo" name="photo">
                 </div>
 
