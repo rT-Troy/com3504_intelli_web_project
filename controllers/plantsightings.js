@@ -102,6 +102,15 @@ exports.getAllFiltered = function(filters = {}, sortOrder = 'newest') {
         return null;
     });
 };
+exports.getAll = function() {
+    return plantsightingModel.find({}).then(plantsightings => {
+        return plantsightings;
+    }).catch(err => {
+        console.error(err);
+        return [];
+    });
+};
+
 
 
 

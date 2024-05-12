@@ -18,55 +18,73 @@ var storage = multer.diskStorage({
 });
 
 router.get('/', function(req, res, next) {
-    const { sortOrder = req.query.sortOrder || 'newest', lat, long, locationFetched } = req.query;
+    const { sortOrder = req.query.sortOrder || 'newest', lat, long } = req.query;
     let filters = {
         flowers: req.query.flowers,
         leaves: req.query.leaves,
         fruitsOrSeeds: req.query.fruitsOrSeeds,
         sunExposure: req.query.sunExposure,
         status: req.query.status,
-        nickname: req.query.nickname  // Accept nickname from the query string
+        nickname: req.query.nickname
     };
 
-    plantsightings.getAll().then(plantsightings => {
-        let data = plantsightings.map(sighting => {
-            return {
+    // Choose to use filters only when they are set, otherwise fetch all
+    if (Object.values(filters).filter(Boolean).length > 0) {
+        plantsightings.getAllFiltered(filters, sortOrder).then(plantsightings => {
+            let data = plantsightings.map(sighting => ({
                 ...sighting.toObject(),
                 dateSeen: new Date(sighting.dateSeen),
                 distance: lat && long ? getDistanceFromLatLonInKm(lat, long, sighting.location.coordinates[1], sighting.location.coordinates[0]) : null
-            };
+            }));
+
+            if (sortOrder === 'distance' && lat && long) {
+                data.sort((a, b) => a.distance - b.distance);
+            } else if (sortOrder === 'oldest') {
+                data.sort((a, b) => a.dateSeen - b.dateSeen);
+            } else {
+                data.sort((a, b) => b.dateSeen - a.dateSeen);
+            }
+
+            res.render('index', {
+                title: 'All PlantSights',
+                data: data,
+                sortOrder: sortOrder,
+                filters: filters
+            });
+        }).catch(err => {
+            console.error(err);
+            res.status(500).send("Error retrieving plant sightings.");
         });
+    } else {
+        // If no specific filters are used, retrieve all entries
+        plantsightings.getAll().then(plantsightings => {
+            let data = plantsightings.map(sighting => ({
+                ...sighting.toObject(),
+                dateSeen: new Date(sighting.dateSeen),
+                distance: lat && long ? getDistanceFromLatLonInKm(lat, long, sighting.location.coordinates[1], sighting.location.coordinates[0]) : null
+            }));
 
-        if (sortOrder === 'distance' && lat && long) {
-            data.sort((a, b) => a.distance - b.distance);
-        } else if (sortOrder === 'oldest') {
-            data.sort((a, b) => a.dateSeen - b.dateSeen);
-        } else {
-            data.sort((a, b) => b.dateSeen - a.dateSeen);
-        }
+            if (sortOrder === 'distance' && lat && long) {
+                data.sort((a, b) => a.distance - b.distance);
+            } else if (sortOrder === 'oldest') {
+                data.sort((a, b) => a.dateSeen - b.dateSeen);
+            } else {
+                data.sort((a, b) => b.dateSeen - a.dateSeen);
+            }
 
-        res.render('index', { title: 'All PlantSights', data: data, sortOrder: sortOrder });
-    }).catch(err => {
-        console.error(err);
-        res.status(500).send("Error retrieving plant sightings.");
-    });
-    plantsightings.getAllFiltered(filters, sortOrder).then(plantsightings => {
-        let data = plantsightings.map(sighting => ({
-            ...sighting.toObject(),
-            dateSeen: new Date(sighting.dateSeen)
-        }));
-
-        res.render('index', {
-            title: 'All PlantSights',
-            data: data,
-            sortOrder: sortOrder,
-            filters: filters
+            res.render('index', {
+                title: 'All PlantSights',
+                data: data,
+                sortOrder: sortOrder,
+                filters: filters
+            });
+        }).catch(err => {
+            console.error(err);
+            res.status(500).send("Error retrieving plant sightings.");
         });
-    }).catch(err => {
-        console.error(err);
-        res.status(500).send("Error retrieving plant sightings.");
-    });
+    }
 });
+
 
 
 
