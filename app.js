@@ -10,6 +10,7 @@ var usersRouter = require('./routes/posts');
 var addRouter = require('./routes/add');
 var displayRouter = require('./routes/display');
 
+
 var app = express();
 
 // view engine setup
@@ -23,8 +24,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/public/images/uploads', express.static(path.join(__dirname, '/public/images/uploads')));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static('public'));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
