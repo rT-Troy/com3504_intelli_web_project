@@ -13,12 +13,13 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <form action="/" method="GET">
+            <form action="/" method="GET" id="sortForm">
                 <div class="form-group">
-                    <label for="sortOrder">Sort By Date:</label>
-                    <select name="sortOrder" id="sortOrder" class="form-control" onchange="this.form.submit()">
-                        <option value="newest" <%= sortOrder === 'newest' ? 'selected' : '' %>>Date(Newest)</option>
-                        <option value="oldest" <%= sortOrder === 'oldest' ? 'selected' : '' %>>Date(Oldest)</option>
+                    <label for="sortOrder">Sort By:</label>
+                    <select name="sortOrder" id="sortOrder" class="form-control" onchange="handleSortChange(this)">
+                        <option value="newest" <%= sortOrder === 'newest' ? 'selected' : '' %>>Date (Newest)</option>
+                        <option value="oldest" <%= sortOrder === 'oldest' ? 'selected' : '' %>>Date (Oldest)</option>
+                        <option value="distance" <%= sortOrder === 'distance' ? 'selected' : '' %>>Distance</option>
                     </select>
                 </div>
             </form>
@@ -33,6 +34,14 @@
             <div class="col-sm-6 col-md-4 col-lg-3">
                 <a href="/display/<%= plantsighting._id %>"><img src="<%= plantsighting.photo %>" class="img-thumbnail" width="200" height="200" alt="Plant Photo"></a>
                 <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
+                <% if (plantsighting.location && plantsighting.location.coordinates) { %>
+                    <!-- Hidden latitude and longitude -->
+                    <span style="display: none;" id="lat_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[1] %></span>
+                    <span style="display: none;" id="long_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[0] %></span>
+                <% } %>
+                <% if (sortOrder === 'distance' && plantsighting.distance != null) { %>
+                    <p><strong>Distance:</strong> <%= plantsighting.distance.toFixed(2) + ' km' %></p>
+                <% } %>
             </div>
         <% }); %>
     </div>
@@ -40,6 +49,7 @@
 <hr>
 <a href="/add"><p>Add New Plant Sighting</p></a>
 </body>
+<script src="/javascripts/distance.js"></script>
 </html>
 
 
