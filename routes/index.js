@@ -18,7 +18,15 @@ var storage = multer.diskStorage({
 });
 
 router.get('/', function(req, res, next) {
-    const { sortOrder = 'newest', lat, long, locationFetched } = req.query;
+    const { sortOrder = req.query.sortOrder || 'newest', lat, long, locationFetched } = req.query;
+    let filters = {
+        flowers: req.query.flowers,
+        leaves: req.query.leaves,
+        fruitsOrSeeds: req.query.fruitsOrSeeds,
+        sunExposure: req.query.sunExposure,
+        status: req.query.status,
+        nickname: req.query.nickname  // Accept nickname from the query string
+    };
 
     plantsightings.getAll().then(plantsightings => {
         let data = plantsightings.map(sighting => {
@@ -38,6 +46,22 @@ router.get('/', function(req, res, next) {
         }
 
         res.render('index', { title: 'All PlantSights', data: data, sortOrder: sortOrder });
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send("Error retrieving plant sightings.");
+    });
+    plantsightings.getAllFiltered(filters, sortOrder).then(plantsightings => {
+        let data = plantsightings.map(sighting => ({
+            ...sighting.toObject(),
+            dateSeen: new Date(sighting.dateSeen)
+        }));
+
+        res.render('index', {
+            title: 'All PlantSights',
+            data: data,
+            sortOrder: sortOrder,
+            filters: filters
+        });
     }).catch(err => {
         console.error(err);
         res.status(500).send("Error retrieving plant sightings.");
