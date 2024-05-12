@@ -119,12 +119,25 @@
                 getRequest.onsuccess = function() {
                     var userNickname = getRequest.result ? getRequest.result.nickname : '';
                     var myPlantsButton = document.getElementById('myPlants');
-                    if (userNickname && myPlantsButton) {
-                        myPlantsButton.addEventListener('click', function() {
-                            window.location.href = `/?nickname=${userNickname}`;
-                        });
+                    if (userNickname) {
+                        // If nickname exists do nothing
+                    } else {
+                        // If no nickname is found, redirect to nickname
+                        window.location.href = '/nickname';  // Redirect to the sign-up or appropriate page
                     }
                 };
+
+                getRequest.onerror = function() {
+                    // Handle errors, e.g., when the object store could not be accessed
+                    console.error('Error fetching nickname from IndexedDB');
+                    window.location.href = '/error';  // Redirect to an error handling page
+                };
+            };
+
+            dbRequest.onerror = function() {
+                // Handle errors when opening the database fails
+                console.error('Error opening IndexedDB');
+                window.location.href = '/error';  // Redirect to an error handling page
             };
 
             // Event listener for the "Show All Plants" button
@@ -136,6 +149,7 @@
             }
         });
     </script>
+
 
 
     <div class="container">
