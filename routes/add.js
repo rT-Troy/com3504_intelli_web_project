@@ -24,33 +24,34 @@ router.get('/add', function(req, res, next) {
   res.render('add', { title: 'New PlantSight Form' });
 });
 
-router.post('/add', upload.single('myImg'), function (req, res, next) {
-  let photoData = req.body.photo;
-
-  if (!photoData) {
-    console.error('No photo data received!');
-    return res.sendStatus(400);
-  }
-
-  // Extract base64 part
-  const base64Data = photoData.replace(/^data:image\/\w+;base64,/, "");
-  const buffer = Buffer.from(base64Data, 'base64');
-
-  // Save the image
-  require('fs').writeFile('public/images/uploads/' + Date.now() + '.png', buffer, function(err) {
-    if (err) {
-      console.error('Error saving image!', err);
-      return res.sendStatus(500);
-    }
-    let formData = req.body;
-    let photoPath = req.file.path;
-    let result = plantsightings.create(formData, photoPath);
-    console.log(result);
-    console.log("/add"+req.body);
-    res.redirect('/');
-  });
-});
-
+// router.post('/add', upload.single('myImg'), function (req, res, next) {
+//   let photoData = req.body.photo;
+//
+//   if (!photoData) {
+//     console.error('No photo data received!');
+//     return res.sendStatus(400);
+//   }
+//
+//   // Extract base64 part
+//   const base64Data = photoData.replace(/^data:image\/\w+;base64,/, "");
+//   const buffer = Buffer.from(base64Data, 'base64');
+//
+//   // Save the image
+//   require('fs').writeFile('public/images/uploads/' + Date.now() + '.png', buffer, function(err) {
+//     if (err) {
+//       console.error('Error saving image!', err);
+//       return res.sendStatus(500);
+//     }
+//     let formData = req.body;
+//     let photoPath = req.file.path;
+//     let result = plantsightings.create(formData, photoPath);
+//     console.log(result);
+//     console.log("/add"+req.body);
+//     res.redirect('/');
+//   });
+// });
+//
+//
 // router.post('/upload-image', function(req, res) {
 //   let imageData = req.body.image;
 //   if (!imageData) {
@@ -61,7 +62,6 @@ router.post('/add', upload.single('myImg'), function (req, res, next) {
 //   const buffer = Buffer.from(base64Data, 'base64');
 //   const uploadsDir = path.join(__dirname, '../public/images/uploads');
 //
-//   // Ensure the directory exists
 //   fs.mkdir(uploadsDir, { recursive: true }, (err) => {
 //     if (err) {
 //       return res.status(500).send('Failed to create directory');
@@ -75,20 +75,25 @@ router.post('/add', upload.single('myImg'), function (req, res, next) {
 //         console.error('Error saving image!', err);
 //         return res.sendStatus(500);
 //       }
-//       res.send({ path: filePath });
+//       res.send({ path: filePath, filename: filename });
+//       console.log("/upload-image"+req.body);
 //     });
+//
+//
 //   });
 // });
 
-router.post('/upload-image', function(req, res) {
-  let imageData = req.body.image;
-  if (!imageData) {
-    return res.status(400).send('No image data received');
+router.post('/add', upload.single('myImg'), function (req, res, next) {
+
+  if (!req.file) {
+    console.error('No image uploaded!');
+    return res.status(400).send('No image uploaded');
   }
 
-  const base64Data = imageData.replace(/^data:image\/\w+;base64,/, "");
-  const buffer = Buffer.from(base64Data, 'base64');
+
+  const base64Data = req.file.buffer.toString('base64');
   const uploadsDir = path.join(__dirname, '../public/images/uploads');
+
 
   fs.mkdir(uploadsDir, { recursive: true }, (err) => {
     if (err) {
@@ -98,18 +103,22 @@ router.post('/upload-image', function(req, res) {
     const filename = `upload-${Date.now()}.png`;
     const filePath = path.join(uploadsDir, filename);
 
-    fs.writeFile(filePath, buffer, function(err) {
+
+    fs.writeFile(filePath, Buffer.from(base64Data, 'base64'), function(err) {
       if (err) {
         console.error('Error saving image!', err);
         return res.sendStatus(500);
       }
-      res.send({ path: filePath, filename: filename });
-      console.log("/upload-image"+req.body);
+
+
+      let formData = req.body;
+      formData.photoPath = filePath;
+
+      let result = plantsightings.create(formData);
+      console.log(result);
+      res.redirect('/');
     });
-
-
   });
 });
-
 
 module.exports = router;

@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var captureButton = document.getElementById('capture');
+    var photoPathInput = document.getElementById('photoPath'); // Input for storing base64 image data
 
     $('#cameraModal').on('show.bs.modal', function () {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -21,43 +22,11 @@ document.addEventListener('DOMContentLoaded', function () {
     captureButton.addEventListener("click", function () {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         var imageData = canvas.toDataURL('image/png');
-        uploadImage(imageData);
+        // Save imageData to a hidden form input
+        photoPathInput.value = imageData;
         $('#cameraModal').modal('hide');
+        document.getElementById('imageFilename').innerHTML = `<span style="color:green;">Image captured. Ready to submit with the form.</span>`;
     });
-
-    // function uploadImage(imageData) {
-    //     var xhr = new XMLHttpRequest();
-    //     xhr.open('POST', '/upload-image', true);
-    //     xhr.setRequestHeader('Content-Type', 'application/json');
-    //     xhr.onload = function () {
-    //         if (xhr.status === 200) {
-    //             console.log('Image uploaded successfully');
-    //             alert("Image uploaded successfully!");
-    //         } else {
-    //             console.error('Error uploading image');
-    //             alert("Failed to upload image.");
-    //         }
-    //     };
-    //     xhr.send(JSON.stringify({ image: imageData }));
-    // }
-
-    function uploadImage(imageData) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/upload-image', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-                console.log('Image uploaded successfully');
-                document.getElementById('imageFilename').innerHTML = `<span style="color:green;">${response.filename}</span>`;
-                document.getElementById('photoPath').value = response.path;
-            } else {
-                console.error('Error uploading image');
-                alert("Failed to upload image.");
-            }
-        };
-        xhr.send(JSON.stringify({ image: imageData }));
-    }
-
 });
+
 
