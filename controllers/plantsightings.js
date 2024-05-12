@@ -84,24 +84,37 @@ exports.getSuggestions = function(id) {
     });
 };
 
-exports.getAll = function (sortOrder = 'newest') {
-// Set the sort criteria, default is by latest date in descending order.
-    let sortQuery = {};
-    if (sortOrder === 'newest') {
-        sortQuery.dateSeen = -1; // descending order
-    } else if (sortOrder === 'oldest') {
-        sortQuery.dateSeen = 1; // Ascending order
-    }
+exports.getAllFiltered = function(filters = {}, sortOrder = 'newest') {
+    let sortQuery = sortOrder === 'newest' ? { dateSeen: -1 } : { dateSeen: 1 };
+    let query = {};
 
+    if (filters.flowers) query['plantCharacteristics.flowers'] = filters.flowers === 'true';
+    if (filters.leaves) query['plantCharacteristics.leaves'] = filters.leaves === 'true';
+    if (filters.fruitsOrSeeds) query['plantCharacteristics.fruitsOrSeeds'] = filters.fruitsOrSeeds === 'true';
+    if (filters.sunExposure) query['plantCharacteristics.sunExposure'] = filters.sunExposure;
+    if (filters.status) query['identification.status'] = filters.status;
+    if (filters.nickname) query['nickname'] = filters.nickname;  // Filter by nickname if provided
 
-    return plantsightingModel.find({}).sort(sortQuery).then(plantsightings => {
-
+    return plantsightingModel.find(query).sort(sortQuery).then(plantsightings => {
         return plantsightings;
     }).catch(err => {
-        console.log(err);
+        console.error(err);
         return null;
     });
 };
+exports.getAll = function() {
+    return plantsightingModel.find({}).then(plantsightings => {
+        return plantsightings;
+    }).catch(err => {
+        console.error(err);
+        return [];
+    });
+};
+
+
+
+
+
 
 exports.addSuggestName = function(id, name) {
     return plantsightingModel.findByIdAndUpdate(id, {

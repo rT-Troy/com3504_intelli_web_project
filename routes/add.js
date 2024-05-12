@@ -2,123 +2,74 @@ var express = require('express');
 var router = express.Router();
 var plantsightings = require('../controllers/plantsightings')
 var multer = require('multer');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+
 // storage defines the storage options to be used for file upload with multer
 var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/images/uploads/');
-  },
-  filename: function (req, file, cb) {
-    var original = file.originalname;
-    var file_extension = original.split(".");
-    // Make the file name the date + the file extension
-    filename =  Date.now() + '.' + file_extension[file_extension.length-1];
-    cb(null, filename);
-  }
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/uploads/');
+    },
+    filename: function (req, file, cb) {
+        var original = file.originalname;
+        var file_extension = original.split(".");
+        // Make the file name the date + the file extension
+        filename =  Date.now() + '.' + file_extension[file_extension.length-1];
+        cb(null, filename);
+    }
 });
-let upload = multer({ storage: storage });
+let upload = multer({
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+    storage: storage
+});
 
 /* GET home page. */
 router.get('/add', function(req, res, next) {
-  res.render('add', { title: 'New PlantSight Form' });
+    res.render('add', { title: 'New PlantSight Form' });
 });
-
-// router.post('/add', upload.single('myImg'), function (req, res, next) {
-//   let photoData = req.body.photo;
-//
-//   if (!photoData) {
-//     console.error('No photo data received!');
-//     return res.sendStatus(400);
-//   }
-//
-//   // Extract base64 part
-//   const base64Data = photoData.replace(/^data:image\/\w+;base64,/, "");
-//   const buffer = Buffer.from(base64Data, 'base64');
-//
-//   // Save the image
-//   require('fs').writeFile('public/images/uploads/' + Date.now() + '.png', buffer, function(err) {
-//     if (err) {
-//       console.error('Error saving image!', err);
-//       return res.sendStatus(500);
-//     }
-//     let formData = req.body;
-//     let photoPath = req.file.path;
-//     let result = plantsightings.create(formData, photoPath);
-//     console.log(result);
-//     console.log("/add"+req.body);
-//     res.redirect('/');
-//   });
-// });
-//
-//
-// router.post('/upload-image', function(req, res) {
-//   let imageData = req.body.image;
-//   if (!imageData) {
-//     return res.status(400).send('No image data received');
-//   }
-//
-//   const base64Data = imageData.replace(/^data:image\/\w+;base64,/, "");
-//   const buffer = Buffer.from(base64Data, 'base64');
-//   const uploadsDir = path.join(__dirname, '../public/images/uploads');
-//
-//   fs.mkdir(uploadsDir, { recursive: true }, (err) => {
-//     if (err) {
-//       return res.status(500).send('Failed to create directory');
-//     }
-//
-//     const filename = `upload-${Date.now()}.png`;
-//     const filePath = path.join(uploadsDir, filename);
-//
-//     fs.writeFile(filePath, buffer, function(err) {
-//       if (err) {
-//         console.error('Error saving image!', err);
-//         return res.sendStatus(500);
-//       }
-//       res.send({ path: filePath, filename: filename });
-//       console.log("/upload-image"+req.body);
-//     });
-//
-//
-//   });
-// });
 
 router.post('/add', upload.single('myImg'), function (req, res, next) {
+    let formData = req.body;
+    let photoPath;
 
-  if (!req.file) {
-    console.error('No image uploaded!');
-    return res.status(400).send('No image uploaded');
-  }
+    if (req.file) {
 
+        photoPath = req.file.path;
+        processFormData();
+    } else if (formData.photo) {
 
-  const base64Data = req.file.buffer.toString('base64');
-  const uploadsDir = path.join(__dirname, '../public/images/uploads');
+        const base64Data = formData.photo.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(base64Data, 'base64');
+        photoPath = path.join('public/images/uploads', `photo-${Date.now()}.jpg`);
 
+        // Ensure the directory exists
+        const dir = path.dirname(photoPath);
+        fs.mkdir(dir, { recursive: true }, (err) => {
+            if (err) {
+                console.error('Error creating directory', err);
+                return res.status(500).send('Error creating directory');
+            }
 
-  fs.mkdir(uploadsDir, { recursive: true }, (err) => {
-    if (err) {
-      return res.status(500).send('Failed to create directory');
+            fs.writeFile(photoPath, buffer, function(err) {
+            if (err) {
+                console.error('Error saving image!', err);
+                return res.status(500).send('Error saving image');
+            }
+            processFormData();
+        });
+    });
+    } else {
+        console.error('No image uploaded!');
+        return res.status(400).send('No image uploaded');
     }
 
-    const filename = `upload-${Date.now()}.png`;
-    const filePath = path.join(uploadsDir, filename);
+    function processFormData() {
 
-
-    fs.writeFile(filePath, Buffer.from(base64Data, 'base64'), function(err) {
-      if (err) {
-        console.error('Error saving image!', err);
-        return res.sendStatus(500);
-      }
-
-
-      let formData = req.body;
-      formData.photoPath = filePath;
-
-      let result = plantsightings.create(formData);
-      console.log(result);
-      res.redirect('/');
-    });
-  });
+        let result = plantsightings.create(formData, photoPath);
+        console.log(result);
+        res.redirect('/');
+    }
 });
+
 
 module.exports = router;

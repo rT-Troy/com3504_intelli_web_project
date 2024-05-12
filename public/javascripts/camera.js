@@ -2,31 +2,64 @@ document.addEventListener('DOMContentLoaded', function () {
     var video = document.getElementById('video');
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
-    var captureButton = document.getElementById('capture');
-    var photoPathInput = document.getElementById('photoPath'); // Input for storing base64 image data
+    var snapButton = document.getElementById('snap');
+    var fileInput = document.getElementById('myImg');
+    var hiddenInput = document.getElementById('photo');
+    var imagePreview = document.getElementById('imagePreview');
 
-    $('#cameraModal').on('show.bs.modal', function () {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-                video.srcObject = stream;
-                video.play();
-            }).catch(function(error) {
-                console.error("Error accessing the camera: ", error);
-                alert("Error accessing the camera: " + error.message);
-            });
-        } else {
-            alert('Your browser does not support the getUserMedia API.');
+
+    fileInput.addEventListener('change', function() {
+
+        if (hiddenInput.value) {
+            hiddenInput.value = "";
+            imagePreview.style.display = 'none';
+            imagePreview.src = '';
+            document.getElementById('status').textContent = '';
         }
     });
 
-    captureButton.addEventListener("click", function () {
+    function openCamera() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(error) {
+                console.error("Error accessing the camera: ", error);
+                alert("Error accessing the camera: " + error.message);
+            });
+    }
+
+    $('#cameraModal').on('show.bs.modal', function () {
+        openCamera();
+    });
+
+    snapButton.addEventListener('click', function() {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         var imageData = canvas.toDataURL('image/png');
-        // Save imageData to a hidden form input
-        photoPathInput.value = imageData;
+        handleCameraCapture(imageData);
+    });
+
+
+    window.handleCameraCapture = function(base64Data) {
+
+        hiddenInput.value = base64Data;
+        imagePreview.src = base64Data;
+        imagePreview.style.display = 'block';
+        document.getElementById('status').textContent = 'Image captured';
+        document.getElementById('status').style.color = 'green';
+
+
+        fileInput.value = "";
+
+
         $('#cameraModal').modal('hide');
-        document.getElementById('imageFilename').innerHTML = `<span style="color:green;">Image captured. Ready to submit with the form.</span>`;
+    };
+
+    $('#cameraModal').on('hide.bs.modal', function () {
+        var tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
     });
 });
-
 
