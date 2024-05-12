@@ -15,6 +15,7 @@ self.addEventListener('install', event => {
                 '/javascripts/index.js',
                 '/javascripts/idb-utility.js',
                 '/javascripts/camera.js',
+                '/javascripts/add.js',
                 '/javascripts/discussionroom.js',
                 '/javascripts/distance.js',
                 '/javascripts/location.js',

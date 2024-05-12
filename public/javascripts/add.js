@@ -1,7 +1,11 @@
-const addNewTodoButtonEventListener = () => {
-    const txt_val = document.getElementById("txt_in").value
+const addNewSlightsButtonEventListener = () => {
+    const nickname = document.getElementById('nickname').value;
+    const dateSeen = document.getElementById('dateSeen').value;
+    const location = document.getElementById('location').value;
+    const height = document.getElementById('height').value;
+    const description = document.getElementById('description').value;
     openSyncTodosIDB().then((db) => {
-        addNewTodoToSync(db, txt_val);
+        addNewTodoToSync(db, nickname, dateSeen, location, height, description);
     });
     navigator.serviceWorker.ready
         .then(function (serviceWorkerRegistration) {
@@ -15,6 +19,6 @@ const addNewTodoButtonEventListener = () => {
 
 window.onload = function () {
     // Add event listeners to buttons
-    const add_btn = document.getElementById("add_btn")
-    add_btn.addEventListener("click", addNewTodoButtonEventListener)
+    const add_submit = document.getElementById("add_submit")
+    add_submit.addEventListener("click", addNewSlightsButtonEventListener)
 }
