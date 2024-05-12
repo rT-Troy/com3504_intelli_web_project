@@ -33,7 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
             imagePreview.style.display = 'block';
         }
 
-        document.getElementById('status').textContent = 'The image has been captured and is ready for submission.';
+        document.getElementById('status').textContent = 'The image has been captured';
+        document.getElementById('status').style.color = 'green';
+        $('#cameraModal').modal('hide');
     });
 
 
