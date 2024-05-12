@@ -10,7 +10,7 @@ const addNewSlightsButtonEventListener = () => {
     navigator.serviceWorker.ready
         .then(function (serviceWorkerRegistration) {
             serviceWorkerRegistration.showNotification("Todo App",
-                {body: "Todo added! - " + txt_val})
+                {body: "Todo added! - " + nickname})
                 .then(r =>
                     console.log(r)
                 );

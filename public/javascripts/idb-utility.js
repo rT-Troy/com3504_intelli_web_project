@@ -1,19 +1,19 @@
 // Function to handle adding a new todo
-const addNewTodoToSync = (syncTodoIDB, txt_val) => {
+const addNewTodoToSync = (syncTodoIDB, nickname, dateSeen, location, height, description) => {
     // Retrieve todo text and add it to the IndexedDB
 
-    if (txt_val !== "") {
+    if (nickname !== "") {
         const transaction = syncTodoIDB.transaction(["sync-adds"], "readwrite")
         const addStore = transaction.objectStore("sync-adds")
-        const addRequest = addStore.add({text: txt_val})
+        const addRequest = addStore.add({nickname: nickname})
         addRequest.addEventListener("success", () => {
-            console.log("Added " + "#" + addRequest.result + ": " + txt_val)
+            console.log("Added " + "#" + addRequest.result + ": " + nickname)
             const getRequest = addStore.get(addRequest.result)
             getRequest.addEventListener("success", () => {
                 console.log("Found " + JSON.stringify(getRequest.result))
                 // Send a sync message to the service worker
                 navigator.serviceWorker.ready.then((sw) => {
-                    sw.sync.register("sync-todo")
+                    sw.sync.register("sync-add")
                 }).then(() => {
                     console.log("Sync registered");
                 }).catch((err) => {
@@ -105,8 +105,8 @@ const getAllTodos = (todoIDB) => {
 // Function to get the todo list from the IndexedDB
 const getAllSyncTodos = (syncTodoIDB) => {
     return new Promise((resolve, reject) => {
-        const transaction = syncTodoIDB.transaction(["sync-todos"]);
-        const todoStore = transaction.objectStore("sync-todos");
+        const transaction = syncTodoIDB.transaction(["sync-adds"]);
+        const todoStore = transaction.objectStore("sync-adds");
         const getAllRequest = todoStore.getAll();
 
         getAllRequest.addEventListener("success", () => {
@@ -121,8 +121,8 @@ const getAllSyncTodos = (syncTodoIDB) => {
 
 // Function to delete a syn
 const deleteSyncTodoFromIDB = (syncTodoIDB, id) => {
-    const transaction = syncTodoIDB.transaction(["sync-todos"], "readwrite")
-    const todoStore = transaction.objectStore("sync-todos")
+    const transaction = syncTodoIDB.transaction(["sync-adds"], "readwrite")
+    const todoStore = transaction.objectStore("sync-adds")
     const deleteRequest = todoStore.delete(id)
     deleteRequest.addEventListener("success", () => {
         console.log("Deleted " + id)
@@ -151,7 +151,7 @@ function openTodosIDB() {
 
 function openSyncTodosIDB() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open("sync-todos", 1);
+        const request = indexedDB.open("sync-adds", 1);
 
         request.onerror = function (event) {
             reject(new Error(`Database error: ${event.target}`));
@@ -159,7 +159,7 @@ function openSyncTodosIDB() {
 
         request.onupgradeneeded = function (event) {
             const db = event.target.result;
-            db.createObjectStore('sync-todos', {keyPath: 'id', autoIncrement: true});
+            db.createObjectStore('sync-adds', {keyPath: 'id', autoIncrement: true});
         };
 
         request.onsuccess = function (event) {

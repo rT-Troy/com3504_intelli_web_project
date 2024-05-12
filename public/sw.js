@@ -63,7 +63,7 @@ self.addEventListener('fetch', event => {
 
 //Sync event to sync the todos
 self.addEventListener('sync', event => {
-    if (event.tag === 'sync-todo') {
+    if (event.tag === 'sync-add') {
         console.log('Service Worker: Syncing new Todos');
         openSyncTodosIDB().then((syncPostDB) => {
             getAllSyncTodos(syncPostDB).then((syncTodos) => {
