@@ -109,7 +109,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var db; // Declare db at a higher scope
-            var request = indexedDB.open('MyDatabase', 1);
+            var request = indexedDB.open('MyDatabase', 2);
 
             request.onupgradeneeded = function(event) {
                 var db = event.target.result; // Assign db on upgrade or creation
