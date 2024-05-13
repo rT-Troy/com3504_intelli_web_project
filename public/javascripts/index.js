@@ -54,3 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+document.getElementById('addNewPlantSighting').addEventListener('click', function() {
+    window.location.href = '/add';
+});
