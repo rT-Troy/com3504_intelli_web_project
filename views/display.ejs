@@ -29,6 +29,8 @@
         <img src="/<%= plantsighting.photo %>" width="200" height="200" alt="Plant Photo">
     <% } %>
     <p><strong>Create by:</strong> <%= plantsighting.nickname %></p>
+    <!-- Hidden span to store the nickname for JavaScript access -->
+    <span id="serverNickname" style="display: none;"><%= plantsighting.nickname %></span>
     <p><strong>Status:</strong> <%= plantsighting.identification.status %></p>
 
 <div id="initial_form" style="display: block">
@@ -60,6 +62,7 @@
 
 
 <hr>
+
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest a Name</button>
 
 <!-- Input Modal -->

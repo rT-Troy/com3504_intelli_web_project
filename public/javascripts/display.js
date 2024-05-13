@@ -12,20 +12,24 @@ document.addEventListener('DOMContentLoaded', function() {
         var getRequest = store.get('userNickname');  // Get the 'userNickname' from the store
 
         getRequest.onsuccess = function() {
-            // Get the stored nickname and compare it to the server nickname
             var storedNickname = getRequest.result ? getRequest.result.nickname : '';
-            var serverNickname = "<%= plantsighting.nickname %>".trim().toLowerCase();  // Assuming this value is dynamically injected by the server
+            var serverNickname = document.getElementById('serverNickname').textContent.trim();  // Read the server-side injected nickname
 
-            // Ensure both are strings and trim any whitespace
-            var localNickname = storedNickname.trim().toLowerCase();
+            var localNickname = storedNickname.trim();
             console.log("Local Nickname: ", localNickname);
             console.log("Server Nickname: ", serverNickname);
 
             if (localNickname !== serverNickname || localNickname === '') {
+                console.log("should not display button");
 
+            } else {
 
-
+                console.log("should display button");
+                var buttonContainer = document.getElementById('buttonContainer');
+                var buttonHTML = `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suggestNameModal">Choose Suggested Names</button>`;
+                buttonContainer.innerHTML = buttonHTML;  // Insert the button into the container
             }
+
         };
 
         getRequest.onerror = function(event) {
