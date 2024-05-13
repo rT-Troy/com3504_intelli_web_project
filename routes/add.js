@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var axios = require('axios');
 var plantsightings = require('../controllers/plantsightings')
 var multer = require('multer');
 const path = require('path');
@@ -25,7 +26,27 @@ let upload = multer({
 
 /* GET home page. */
 router.get('/add', function(req, res, next) {
-    res.render('add', { title: 'New PlantSight Form' });
+    const query = req.query.query;
+    const sparqlQuery = `
+        SELECT DISTINCT ?label WHERE {
+            ?plant a dbo:Plant ;
+                   rdfs:label ?label .
+            FILTER (langMatches(lang(?label), "EN") && regex(?label, "${query}", "i")).
+        } LIMIT 10`;
+
+    const url = `https://dbpedia.org/sparql?query=${encodeURIComponent(sparqlQuery)}&format=json`;
+
+    axios.get(url)
+        .then(response => {
+            const plants = response.data.results.bindings.map(bind => ({
+                label: bind.label.value
+            }));
+            res.json(plants);
+        })
+        .catch(error => {
+            console.error('Error querying DBpedia:', error);
+            res.status(500).json({error: 'Failed to fetch plant names'});
+        });
 });
 
 router.post('/add', upload.single('myImg'), function (req, res, next) {
