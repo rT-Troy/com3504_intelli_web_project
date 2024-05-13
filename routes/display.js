@@ -26,49 +26,62 @@
         plantsightings.getOne(id).then(plantsighting => {
             if (!plantsighting) {
                 res.status(404).send('Plant sighting not found');
-                return; // Exit the function after sending the response
+                return;
             }
 
-            // Adjust the dateSeen property to be a Date object
-            plantsighting.dateSeen = new Date(plantsighting.dateSeen);
+            // Extract keywords from the description and characteristics
+            let descriptionKeywords = plantsighting.description.replace(/\W/g, ' ').split(" ").filter(word => word.length > 3);
+            let color = plantsighting.plantCharacteristics.flowerColor || "";
+            let sunExposure = plantsighting.plantCharacteristics.sunExposure.replace(/\s+/g, '_');
 
+            // SPARQL endpoint and query construction
+            const endpointUrl = 'https://dbpedia.org/sparql';
+            let filters = descriptionKeywords.map(word => `CONTAINS(LCASE(?description), "${word.toLowerCase()}")`).join(" || ");
 
-            // Prepare variables for the render function
-            const title = plantsighting.identification.status === 'in-progress' ?
-                "In progress (suggest a name)" :
-                plantsighting.identification.name;
+            const sparqlQuery = `
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX dbo: <http://dbpedia.org/ontology/>
+            PREFIX dbr: <http://dbpedia.org/resource/>
+            PREFIX dct: <http://purl.org/dc/terms/>
+            PREFIX dbc: <http://dbpedia.org/resource/Category:>
 
-            // Render the template with the prepared variables
-            res.render('display', {
-                title: title,
-                plantsighting: plantsighting,
-            });
+            SELECT ?plant ?plantLabel ?description WHERE {
+              ?plant dbo:abstract ?description.
+              ?plant rdfs:label ?plantLabel.
+              { ?plant dbo:kingdom dbr:Plant } UNION { ?plant dct:subject dbc:Flora }
+              FILTER (langMatches(lang(?description), "EN") && langMatches(lang(?plantLabel), "EN"))
+              FILTER (${filters})
+            } LIMIT 3
+        `;
 
+            const encodedQuery = encodeURIComponent(sparqlQuery);
+            const queryUrl = `${endpointUrl}?query=${encodedQuery}&format=json`;
+
+            fetch(queryUrl)
+                .then(response => response.json())
+                .then(data => {
+                    let bindings = data.results.bindings;
+                    res.render('display', {
+                        title: plantsighting.identification.name || "In progress",
+                        plantsighting: plantsighting,
+                        additionalPlants: bindings
+                    });
+                })
+                .catch(err => {
+                    console.error('SPARQL query failed', err);
+                    res.render('display', {
+                        title: plantsighting.identification.name || "In progress",
+                        plantsighting: plantsighting,
+                        additionalPlants: [] // Ensure this is always defined
+                    });
+                });
         }).catch(err => {
             console.error(err);
             res.status(500).send("Error retrieving plant sighting.");
         });
     });
 
-    router.post('/display/:id/add-suggest-name', upload.none(), function(req, res) {
-        console.log("Received body: ", req.body); // This will log the body of the request
 
-        const id = req.params.id;
-        const newName = req.body.suggestedName;
-
-        if (!newName) {
-            console.error("No new name provided");
-            return res.status(400).send("No new name provided");
-        }
-
-        plantsightings.addSuggestName(id, newName).then((updatedDocument) => {
-            console.log("Updated document: ", updatedDocument);
-            res.redirect('/display/' + id);
-        }).catch(err => {
-            console.error("Error in addSuggestName:", err);
-            res.status(500).send("Error adding suggested name.");
-        });
-    });
 
 
     router.get('/suggest-nicknames/:id', function(req, res) {
