@@ -64,17 +64,16 @@ self.addEventListener('fetch', event => {
 //Sync event to sync the todos
 self.addEventListener('sync', event => {
     if (event.tag === 'sync-add') {
-        console.log('Service Worker: Syncing new Todos');
-        openSyncTodosIDB().then((syncPostDB) => {
-            getAllSyncTodos(syncPostDB).then((syncTodos) => {
-                for (const syncTodo of syncTodos) {
-                    console.log('Service Worker: Syncing new Todo: ', syncTodo);
-                    console.log(syncTodo.text)
+        console.log('Service Worker: Syncing new Adds');
+        openSyncAddsIDB().then((syncPostDB) => {
+            getAllSyncAdds(syncPostDB).then((syncAdds) => {
+                for (const syncAdd of syncAdds) {
+                    console.log('Service Worker: Syncing new Add: ', syncAdd);
                     // Create a FormData object
                     const formData = new URLSearchParams();
 
                     // Iterate over the properties of the JSON object and append them to FormData
-                    formData.append("text", syncTodo.text);
+                    formData.append("nickname", syncAdd.nickname);
 
                     // Fetch with FormData instead of JSON
                     fetch('http://localhost:3000/add', {
@@ -84,14 +83,14 @@ self.addEventListener('sync', event => {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
                     }).then(() => {
-                        console.log('Service Worker: Syncing new Todo: ', syncTodo, ' done');
-                        deleteSyncTodoFromIDB(syncPostDB,syncTodo.id);
+                        console.log('Service Worker: Syncing new Add: ', syncAdd, ' done');
+                        deleteSyncAddFromIDB(syncPostDB,syncAdd.id);
                         // Send a notification
-                        self.registration.showNotification('Todo Synced', {
-                            body: 'Todo synced successfully!',
+                        self.registration.showNotification('Add Synced', {
+                            body: 'Add synced successfully!',
                         });
                     }).catch((err) => {
-                        console.error('Service Worker: Syncing new Todo: ', syncTodo, ' failed');
+                        console.error('Service Worker: Syncing new Add: ', syncAdd, ' failed');
                     });
                 }
             });
