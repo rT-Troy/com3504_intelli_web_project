@@ -62,12 +62,12 @@
                 <div class="row g-3">
 <!--                    height-->
                     <div class="col-sm-6">
-                        <label for="height" class="form-label">Plant Height:</label>
+                        <label for="height" class="form-label">Estimate Plant Height:</label>
                         <input class="form-control" type="number" id="height" name="height" step="0.01" placeholder="In meters" required>
                     </div>
 <!--                    spread-->
                     <div class="col-sm-6">
-                        <label for="spread" class="form-label">Plant Spread:</label>
+                        <label for="spread" class="form-label">Estimate Plant Spread:</label>
                         <input class="form-control" type="number" id="spread" name="spread" step="0.01" placeholder="In meters" required>
                     </div>
                 </div><br>
@@ -92,9 +92,14 @@
                         <label class="form-check-label" for="fruitsOrSeeds">Fruits or Seeds</label>
                     </div>
                 </div>
+
+                <div class="mb-3">
+                    <label for="color" class="form-label">Color of the Flower:</label>
+                    <input class="form-control" id="flowerColor" name="flowerColor">
+                </div>
 <!--                sun exposure-->
                 <div class="mb-3">
-                    <label for="sunExposure" class="form-label">Sun Exposure:</label>
+                    <label for="sunExposure" class="form-label">Sun Exposure in that area:</label>
                     <select class="form-control" id="sunExposure" name="sunExposure">
                         <option value="full sun">Full Sun</option>
                         <option value="partial shade">Partial Shade</option>

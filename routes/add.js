@@ -64,7 +64,7 @@ router.post('/add', upload.single('myImg'), function (req, res, next) {
     }
 
     function processFormData() {
-
+        console.log(formData);
         let result = plantsightings.create(formData, photoPath);
         console.log(result);
         res.redirect('/');

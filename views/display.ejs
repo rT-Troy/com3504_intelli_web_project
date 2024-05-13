@@ -58,60 +58,10 @@
     </div>
 </div>
 
-<script>
-    // Function to connect to the room after retrieving the nickname
-    function ConnectAfterNickname() {
-        // Trigger the click event of the "connect" button after retrieving the nickname
-        document.getElementById('connect').click();
-    }
-
-    // Call the function to connect to the room after retrieving the nickname when the DOM content is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        var db; // Declare db at a higher scope
-        var request = indexedDB.open('MyDatabase', 2);
-
-        request.onupgradeneeded = function(event) {
-            var db = event.target.result; // Assign db on upgrade or creation
-            if (!db.objectStoreNames.contains('nicknames')) {
-                db.createObjectStore('nicknames', {keyPath: 'id'});
-            }
-        };
-
-        request.onerror = function(event) {
-            console.error("IndexedDB error:", event.target.errorCode);
-        };
-
-        request.onsuccess = function(event) {
-            db = event.target.result; // Also assign db on successful opening
-
-            var tx = db.transaction('nicknames', 'readonly');
-            var store = tx.objectStore('nicknames');
-            var getReq = store.get('userNickname');  // Retrieve the nickname from IndexedDB
-
-            getReq.onsuccess = function() {
-                var nicknameInput = document.getElementById('name');
-                if (getReq.result) {
-                    nicknameInput.value = getReq.result.nickname;
-                } else {
-                    console.log('No nickname found in IndexedDB.');
-                }
-                nicknameInput.disabled = false;  // Enable input to ensure it is included in form submission
-
-                // Call the function to connect to the room after retrieving the nickname
-                ConnectAfterNickname();
-            };
-
-            getReq.onerror = function(event) {
-                console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
-            };
-        };
-    });
-</script>
-
 
 <hr>
-
-<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest a Name</button>
+<div id="buttonContainerSuggest"></div>
+<!--<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest a Name</button>-->
 
 <!-- Input Modal -->
 <div class="modal fade" id="inputSuggestNameModal" tabindex="-1" aria-labelledby="inputModalLabel" aria-hidden="true">
@@ -133,9 +83,7 @@
         </div>
     </div>
 </div>
-<div id="buttonContainer"></div>
-<!--<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suggestNameModal">Choose Suggested Names</button>-->
-
+<div id="buttonContainerChoose"></div>
 <!-- Modal -->
 <div class="modal fade" id="suggestNameModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -173,6 +121,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/javascripts/display.js"></script>
+<script src="/javascripts/connectAfterNickname.js"></script>
 </html>
 
 

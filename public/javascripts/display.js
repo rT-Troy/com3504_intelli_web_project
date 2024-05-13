@@ -20,12 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Server Nickname: ", serverNickname);
 
             if (localNickname !== serverNickname || localNickname === '') {
-                console.log("should not display button");
+
+                var buttonContainer = document.getElementById('buttonContainerSuggest');
+                var buttonHTML = `<button type="button" class="btn btn-primary" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest a Name</button>`;
+                buttonContainer.innerHTML = buttonHTML;  // Insert the button into the container
 
             } else {
 
                 console.log("should display button");
-                var buttonContainer = document.getElementById('buttonContainer');
+                var buttonContainer = document.getElementById('buttonContainerChoose');
                 var buttonHTML = `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suggestNameModal">Choose Suggested Names</button>`;
                 buttonContainer.innerHTML = buttonHTML;  // Insert the button into the container
             }
