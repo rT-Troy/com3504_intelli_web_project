@@ -30,14 +30,6 @@
     <% } %>
     <p><strong>Create by:</strong> <%= plantsighting.nickname %></p>
     <p><strong>Status:</strong> <%= plantsighting.identification.status %></p>
-    <% if (additionalPlants && additionalPlants.length > 0) { %>
-        <h2>Possible Matching Plants</h2>
-        <ul>
-            <% additionalPlants.forEach(function(plant) { %>
-                <li><a href="<%= plant.plant.value %>"><%= plant.plantLabel.value %></a> - <%= plant.description.value %></li>
-            <% }); %>
-        </ul>
-    <% } %>
 
 <div id="initial_form" style="display: block">
     <p>Discussion Room</p>
