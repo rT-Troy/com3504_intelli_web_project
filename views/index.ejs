@@ -120,10 +120,15 @@
                     var userNickname = getRequest.result ? getRequest.result.nickname : '';
                     var myPlantsButton = document.getElementById('myPlants');
                     if (userNickname) {
-                        // If nickname exists do nothing
+                        myPlantsButton.addEventListener('click', function() {
+                            // Redirect to the homepage with the nickname as a query parameter
+                            window.location.href = `/?nickname=${userNickname}`;
+                        });
                     } else {
-                        // If no nickname is found, redirect to nickname
-                        window.location.href = '/nickname';  // Redirect to the sign-up or appropriate page
+                        // If no nickname is found, redirect to a page to set nickname
+                        myPlantsButton.addEventListener('click', function() {
+                            window.location.href = '/nickname';  // Redirect to the nickname setup page
+                        });
                     }
                 };
 
