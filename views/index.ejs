@@ -8,165 +8,201 @@
 </head>
 <body>
 <h1><%= title %></h1>
-
-<!-- Sort Dropdown Menu -->
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col">
-            <form action="/" method="GET" id="sortForm">
-                <div class="form-group">
-                    <label for="sortOrder">Sort By:</label>
-                    <select name="sortOrder" id="sortOrder" class="form-control" onchange="handleSortChange(this)">
-                        <option value="newest" <%= sortOrder === 'newest' ? 'selected' : '' %>>Date (Newest)</option>
-                        <option value="oldest" <%= sortOrder === 'oldest' ? 'selected' : '' %>>Date (Oldest)</option>
-                        <option value="distance" <%= sortOrder === 'distance' ? 'selected' : '' %>>Distance</option>
-                    </select>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="container">
-        <form action="/" method="GET">
-            <div class="row">
-                <!-- Existing filters here -->
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="status">Identification Status:</label>
-                        <select name="status" id="status" class="form-control" onchange="this.form.submit()">
-                            <option value="">All</option>
-                            <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Completed</option>
-                            <option value="in-progress" <%= filters.status === 'in-progress' ? 'selected' : '' %>>In Progress</option>
-                        </select>
+        <!-- Left side: Filters -->
+        <div class="col-md-3">
+            <div class="accordion" id="filterAccordion">
+                <!-- Identification Status Accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingStatus">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatus" aria-expanded="false" aria-controls="collapseStatus">
+                            Identification Status
+                        </button>
+                    </h2>
+                    <div id="collapseStatus" class="accordion-collapse collapse show" aria-labelledby="headingStatus" data-bs-parent="#filterAccordion">
+                        <div class="accordion-body">
+                            <form action="/" method="GET">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusAll" value="" <%= filters.status === '' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="statusAll">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusCompleted" value="completed" <%= filters.status === 'completed' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="statusCompleted">Completed</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusInProgress" value="in-progress" <%= filters.status === 'in-progress' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="statusInProgress">In Progress</label>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                <!-- End of new filter for status -->
+                <!-- Flower Accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFlowers">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFlowers" aria-expanded="false" aria-controls="collapseFlowers">
+                            Flowers
+                        </button>
+                    </h2>
+                    <div id="collapseFlowers" class="accordion-collapse collapse" aria-labelledby="headingFlowers" data-bs-parent="#filterAccordion">
+                        <div class="accordion-body">
+                            <form action="/" method="GET">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flowers" id="flowersAll" value="" <%= filters.flowers === '' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="flowersAll">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flowers" id="flowersTrue" value="true" <%= filters.flowers === 'true' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="flowersTrue">With Flowers</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flowers" id="flowersFalse" value="false" <%= filters.flowers === 'false' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="flowersFalse">Without Flowers</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Leaves Accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingLeaves">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLeaves" aria-expanded="false" aria-controls="collapseLeaves">
+                            Leaves
+                        </button>
+                    </h2>
+                    <div id="collapseLeaves" class="accordion-collapse collapse" aria-labelledby="headingLeaves" data-bs-parent="#filterAccordion">
+                        <div class="accordion-body">
+                            <form action="/" method="GET">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="leaves" id="leavesAll" value="" <%= filters.leaves === '' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="leavesAll">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="leaves" id="leavesTrue" value="true" <%= filters.leaves === 'true' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="leavesTrue">With Leaves</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="leaves" id="leavesFalse" value="false" <%= filters.leaves === 'false' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="leavesFalse">Without Leaves</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fruits/Seeds Accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFruitsSeeds">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFruitsSeeds" aria-expanded="false" aria-controls="collapseFruitsSeeds">
+                            Fruits/Seeds
+                        </button>
+                    </h2>
+                    <div id="collapseFruitsSeeds" class="accordion-collapse collapse" aria-labelledby="headingFruitsSeeds" data-bs-parent="#filterAccordion">
+                        <div class="accordion-body">
+                            <form action="/" method="GET">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="fruitsOrSeeds" id="fruitsOrSeedsAll" value="" <%= filters.fruitsOrSeeds === '' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="fruitsOrSeedsAll">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="fruitsOrSeeds" id="fruitsOrSeedsTrue" value="true" <%= filters.fruitsOrSeeds === 'true' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="fruitsOrSeedsTrue">With Fruits/Seeds</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="fruitsOrSeeds" id="fruitsOrSeedsFalse" value="false" <%= filters.fruitsOrSeeds === 'false' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="fruitsOrSeedsFalse">Without Fruits/Seeds</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sun Exposure Accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSunExposure">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSunExposure" aria-expanded="false" aria-controls="collapseSunExposure">
+                            Sun Exposure
+                        </button>
+                    </h2>
+                    <div id="collapseSunExposure" class="accordion-collapse collapse" aria-labelledby="headingSunExposure" data-bs-parent="#filterAccordion">
+                        <div class="accordion-body">
+                            <form action="/" method="GET">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sunExposure" id="sunExposureAll" value="" <%= filters.sunExposure === '' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="sunExposureAll">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sunExposure" id="sunExposureFullSun" value="full sun" <%= filters.sunExposure === 'full sun' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="sunExposureFullSun">Full Sun</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sunExposure" id="sunExposurePartialShade" value="partial shade" <%= filters.sunExposure === 'partial shade' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="sunExposurePartialShade">Partial Shade</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sunExposure" id="sunExposureFullShade" value="full shade" <%= filters.sunExposure === 'full shade' ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <label class="form-check-label" for="sunExposureFullShade">Full Shade</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
-    <!-- Filtering Menu for Flower -->
-    <div class="container">
-        <!-- Flower Filter -->
-        <form action="/" method="GET">
-            <div class="form-group">
-                <label for="flowers">Flowers:</label>
-                <select name="flowers" id="flowers" class="form-control" onchange="this.form.submit()">
-                    <option value="">All</option>
-                    <option value="true" <%= filters.flowers === 'true' ? 'selected' : '' %>>With Flowers</option>
-                    <option value="false" <%= filters.flowers === 'false' ? 'selected' : '' %>>Without Flowers</option>
-                </select>
-            </div>
-            <!-- Additional filters for leaves, fruits or seeds, and sun exposure -->
-            <div class="form-group">
-                <label for="leaves">Leaves:</label>
-                <select name="leaves" id="leaves" class="form-control" onchange="this.form.submit()">
-                    <option value="">All</option>
-                    <option value="true" <%= filters.leaves === 'true' ? 'selected' : '' %>>With Leaves</option>
-                    <option value="false" <%= filters.leaves === 'false' ? 'selected' : '' %>>Without Leaves</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="fruitsOrSeeds">Fruits/Seeds:</label>
-                <select name="fruitsOrSeeds" id="fruitsOrSeeds" class="form-control" onchange="this.form.submit()">
-                    <option value="">All</option>
-                    <option value="true" <%= filters.fruitsOrSeeds === 'true' ? 'selected' : '' %>>With Fruits/Seeds</option>
-                    <option value="false" <%= filters.fruitsOrSeeds === 'false' ? 'selected' : '' %>>Without Fruits/Seeds</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="sunExposure">Sun Exposure:</label>
-                <select name="sunExposure" id="sunExposure" class="form-control" onchange="this.form.submit()">
-                    <option value="">All</option>
-                    <option value="full sun" <%= filters.sunExposure === 'full sun' ? 'selected' : '' %>>Full Sun</option>
-                    <option value="partial shade" <%= filters.sunExposure === 'partial shade' ? 'selected' : '' %>>Partial Shade</option>
-                    <option value="full shade" <%= filters.sunExposure === 'full shade' ? 'selected' : '' %>>Full Shade</option>
-                </select>
-            </div>
-        </form>
-    </div>
+        </div>
+        <!-- Right side: Plant Sightings -->
+        <div class="col-md-9">
+            <!-- Sort Dropdown Menu -->
+            <div class="row justify-content-end mb-3">
+                <div class="col-auto">
 
+                    <button id="addNewPlantSighting" class="btn btn-success">Add New Plant Sighting</button>
+                    <button id="myPlants" class="btn btn-light me-md-2">Show My Plants</button>
+                    <button id="showAll" class="btn btn-light">Show All Plants</button>
+                </div>
+                <div class="col-auto">
+                    <form action="/" method="GET" id="sortForm">
+                        <div class="form-group">
+                            <label for="sortOrder">Sort By:</label>
+                            <select name="sortOrder" id="sortOrder" class="form-control" onchange="handleSortChange(this)">
+                                <option value="newest" <%= sortOrder === 'newest' ? 'selected' : '' %>>Date (Newest)</option>
+                                <option value="oldest" <%= sortOrder === 'oldest' ? 'selected' : '' %>>Date (Oldest)</option>
+                                <option value="distance" <%= sortOrder === 'distance' ? 'selected' : '' %>>Distance</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
 
-<!-- Plant Sightings Display -->
-<div class="container">
-    <div class="row">
-        <% data.forEach(plantsighting => { %>
-            <div class="col-sm-6 col-md-4 col-lg-3">
-                <a href="/display/<%= plantsighting._id %>"><img src="<%= plantsighting.photo %>" class="img-thumbnail" width="200" height="200" alt="Plant Photo"></a>
-                <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
-                <% if (plantsighting.location && plantsighting.location.coordinates) { %>
-                    <!-- Hidden latitude and longitude -->
-                    <span style="display: none;" id="lat_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[1] %></span>
-                    <span style="display: none;" id="long_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[0] %></span>
-                <% } %>
-                <% if (sortOrder === 'distance' && plantsighting.distance != null) { %>
-                    <p><strong>Distance:</strong> <%= plantsighting.distance.toFixed(2) + ' km' %></p>
-                <% } %>
             </div>
-        <% }); %>
+            <hr>
+<!--            <div class="d-grid gap-2 d-md-flex justify-content-md-end">-->
+<!--            <button id="myPlants" class="btn btn-primary me-md-2">Show My Plants</button>-->
+<!--            <button id="showAll" class="btn btn-secondary ">Show All Plants</button>-->
+<!--            </div>-->
+
+            <div class="row">
+                <% data.forEach(plantsighting => { %>
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <a href="/display/<%= plantsighting._id %>"><img src="<%= plantsighting.photo %>" class="img-thumbnail" width="200" height="200" alt="Plant Photo"></a>
+                        <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
+                        <% if (plantsighting.location && plantsighting.location.coordinates) { %>
+                            <!-- Hidden latitude and longitude -->
+                            <span style="display: none;" id="lat_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[1] %></span>
+                            <span style="display: none;" id="long_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[0] %></span>
+                        <% } %>
+                        <% if (sortOrder === 'distance' && plantsighting.distance != null) { %>
+                            <p><strong>Distance:</strong> <%= plantsighting.distance.toFixed(2) + ' km' %></p>
+                        <% } %>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
     </div>
 </div>
-<hr>
-<a href="/add"><p>Add New Plant Sighting</p></a>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var dbRequest = indexedDB.open('MyDatabase', 1);
-
-            dbRequest.onsuccess = function(event) {
-                var db = event.target.result;
-                var transaction = db.transaction('nicknames', 'readonly');
-                var store = transaction.objectStore('nicknames');
-                var getRequest = store.get('userNickname');
-
-                getRequest.onsuccess = function() {
-                    var userNickname = getRequest.result ? getRequest.result.nickname : '';
-                    var myPlantsButton = document.getElementById('myPlants');
-                    if (userNickname) {
-                        myPlantsButton.addEventListener('click', function() {
-                            // Redirect to the homepage with the nickname as a query parameter
-                            window.location.href = `/?nickname=${userNickname}`;
-                        });
-                    } else {
-                        // If no nickname is found, redirect to a page to set nickname
-                        myPlantsButton.addEventListener('click', function() {
-                            window.location.href = '/nickname';  // Redirect to the nickname setup page
-                        });
-                    }
-                };
-
-                getRequest.onerror = function() {
-                    // Handle errors, e.g., when the object store could not be accessed
-                    console.error('Error fetching nickname from IndexedDB');
-                    window.location.href = '/error';  // Redirect to an error handling page
-                };
-            };
-
-            dbRequest.onerror = function() {
-                // Handle errors when opening the database fails
-                console.error('Error opening IndexedDB');
-                window.location.href = '/error';  // Redirect to an error handling page
-            };
-
-            // Event listener for the "Show All Plants" button
-            var showAllButton = document.getElementById('showAll');
-            if (showAllButton) {
-                showAllButton.addEventListener('click', function() {
-                    window.location.href = '/';
-                });
-            }
-        });
-    </script>
 
 
 
-    <div class="container">
-        <button id="myPlants" class="btn btn-primary">Show My Plants</button>
-        <button id="showAll" class="btn btn-secondary">Show All Plants</button>
-    </div>
-
-
-
-</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/javascripts/index.js"></script>
 <script src="/javascripts/distance.js"></script>
+</body>
 </html>
-
-
-
