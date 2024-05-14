@@ -11,6 +11,7 @@
 <body onload="init()">
 <div class="container">
     <div class="row">
+        <!--First column displays the sighting information-->
         <div class="col-md-7">
             <h1><%= title %></h1>
 
@@ -35,25 +36,29 @@
             <span id="serverNickname" style="display: none;"><%= plantsighting.nickname %></span>
             <p><strong>Status:</strong> <%= plantsighting.identification.status %></p>
         </div>
+        <!--Second column displays the discussion board-->
         <div class="col-md-5">
             <div id="initial_form" style="display: block">
                 <p>Discussion Room</p>
+                <!--Form to connect to the chat (should never be visible to a user)-->
                 <form onsubmit="return false;">
                     <input type="hidden" id="name" name="name">
                     <input type="hidden" id="roomNo" name="roomNo" value="<%= plantsighting._id %>">
                     <button id="connect" onclick="connectToRoom()">Join the Discussion</button>
                 </form>
             </div>
+            <!--The chat-->
             <div id="chat_interface" style="display: none">
                 <div>
                     <h1 id="discussiontitle">Discussion Board</h1>
                 </div>
                 <div id="history" class="boxed"></div>
                 <div id="input" class="bottom boxed">
+                    <!--The chat input-->
                     <form onsubmit="return false;" style="width: 100%">
                         <p>
                             <input type="hidden" id="plantSighting" name="plantSighting" value="<%= plantsighting._id %>">
-                            <div class="chat-container">
+                            <div class="chat-input-container">
                                 <input type="text" id="text" class="chat-input" placeholder="Type your message here...">
                                 <button class="send-button" id="chat_send" onclick="sendChatText()">Send</button>
                             </div>

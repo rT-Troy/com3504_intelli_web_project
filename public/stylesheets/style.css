@@ -7,6 +7,7 @@ a {
   color: #00B7FF;
 }
 
+/* messages in the discussion board */
 .message {
   background-color: #f2f2f2;
   padding: 10px;
@@ -17,26 +18,28 @@ a {
   border-radius: 3px;
 }
 
-.chat-container {
-  display: flex; /* Use flexbox layout */
-  align-items: center; /* Align items vertically */
+/* discussion board chat input box and button */
+.chat-input-container {
+  display: flex;
+  align-items: center;
   justify-content: space-between; /* Distribute items evenly */
 }
 
+/* discussion board chat input box */
 .chat-input {
-  border: 2px solid #343a40; /* Border color same as message div */
-  border-radius: 3px 0 0 3px; /* Rounded corners */
-  padding: 10px; /* Padding inside the input box */
-  font-size: 14px; /* Adjust font size as needed */
+  border: 2px solid #343a40;
+  border-radius: 3px 0 0 3px;
+  padding: 10px;
+  font-size: 14px;
   flex: 1; /* Take up remaining space */
   margin-right: -2px;
 }
-
 .chat-input:focus {
-  outline: none; /* Remove focus outline */
-  border-color: #343a40; /* Set border color back to default */
+  outline: none;
+  border-color: #343a40;
 }
 
+/* discussion board chat input button */
 .send-button {
   background-color: #343a40;
   color: white;
