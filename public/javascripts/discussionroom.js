@@ -69,10 +69,11 @@ function connectToRoom() {
  */
 function writeOnHistory(text) {
     let history = document.getElementById('history');
-    let paragraph = document.createElement('p');
-    paragraph.innerHTML = text;
-    history.appendChild(paragraph);
-    document.getElementById('text').value = '';
+    let messageDiv = document.createElement('div'); // Create a div element
+    messageDiv.classList.add('message'); // Add a class for styling
+    messageDiv.innerHTML = text;; // Set the text content of the div
+    history.appendChild(messageDiv); // Append the div to the history container
+    document.getElementById('text').value = ''; // Clear the input field
 }
 
 /**
@@ -83,7 +84,5 @@ function writeOnHistory(text) {
 function hideLoginInterface(room, userId) {
     document.getElementById('initial_form').style.display = 'none';
     document.getElementById('chat_interface').style.display = 'block';
-    document.getElementById('who_you_are').innerHTML= userId;
-    document.getElementById('in_room').innerHTML= ' '+room;
 }
 

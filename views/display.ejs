@@ -9,119 +9,121 @@
     <script src="/javascripts/discussionroom.js"></script>
 </head>
 <body onload="init()">
-<h1><%= title %></h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <h1><%= title %></h1>
 
-
-    <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
-    <p><strong>Location:</strong> Longitude: <%= plantsighting.location.coordinates[0] %>, Latitude: <%= plantsighting.location.coordinates[1] %></p>
-    <p><strong>Description:</strong> <%= plantsighting.description %></p>
-    <p><strong>Plant Height:</strong> <%= plantsighting.plantSize.height %> meters</p>
-    <p><strong>Plant Spread:</strong> <%= plantsighting.plantSize.spread %> meters</p>
-    <p><strong>Characteristics:</strong></p>
-    <ul>
-        <% if (plantsighting.plantCharacteristics.flowers) { %><li>Flowers</li><% } %>
-        <% if (plantsighting.plantCharacteristics.leaves) { %><li>Leaves</li><% } %>
-        <% if (plantsighting.plantCharacteristics.fruitsOrSeeds) { %><li>Fruits or Seeds</li><% } %>
-        <li>Sun Exposure: <%= plantsighting.plantCharacteristics.sunExposure %></li>
-        <% if (plantsighting.plantCharacteristics.flowerColor) { %><li>Flower Color: <%= plantsighting.plantCharacteristics.flowerColor %></li><% } %>
-    </ul>
-    <% if (plantsighting.photo) { %>
-        <img src="/<%= plantsighting.photo %>" width="200" height="200" alt="Plant Photo">
-    <% } %>
-    <p><strong>Create by:</strong> <%= plantsighting.nickname %></p>
-    <!-- Hidden span to store the nickname for JavaScript access -->
-    <span id="serverNickname" style="display: none;"><%= plantsighting.nickname %></span>
-    <p><strong>Status:</strong> <%= plantsighting.identification.status %></p>
-
-<div id="initial_form" style="display: block">
-    <p>Discussion Room</p>
-    <form onsubmit="return false;">
-        <input type="hidden" id="name" name="name">
-        <input type="hidden" id="roomNo" name="roomNo" value="<%= plantsighting._id %>">
-        <button id="connect" onclick="connectToRoom()">Join the Discussion</button>
-    </form>
-</div>
-<div id="chat_interface" style="display: none">
-    <div>
-        <div id="who_you_are" style="display: inline"></div>, you are in room: <div id="in_room" style="display: inline"></div>
-    </div>
-    <div id="history" class="boxed"></div>
-    <div id="input" class="bottom boxed">
-        <form onsubmit="return false;" style="width: 100%">
-            <p>
-                <label for="name"> chat: </label>
-                <input type="text" id="text" name="text" style="width: 80%">
-                <input type="hidden" id="plantSighting" name="plantSighting" value="<%= plantsighting._id %>">
-                <button id="chat_send" onclick="sendChatText()">Send</button>
-            </p>
-        </form>
-    </div>
-</div>
-
-
-<hr>
-<div id="buttonContainerSuggest"></div>
-<!--<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest a Name</button>-->
-
-<!-- Input Modal -->
-<div class="modal fade" id="inputSuggestNameModal" tabindex="-1" aria-labelledby="inputModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="inputModalLabel">Input Suggested Name</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="suggestNameForm" action="/display/<%= plantsighting._id %>/add-suggest-name" method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="suggestedName" class="form-label">Suggested Name</label>
-                        <input type="text" class="form-control" id="suggestedName" name="suggestedName" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+            <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
+            <p><strong>Location:</strong> Longitude: <%= plantsighting.location.coordinates[0] %>, Latitude: <%= plantsighting.location.coordinates[1] %></p>
+            <p><strong>Description:</strong> <%= plantsighting.description %></p>
+            <p><strong>Plant Height:</strong> <%= plantsighting.plantSize.height %> meters</p>
+            <p><strong>Plant Spread:</strong> <%= plantsighting.plantSize.spread %> meters</p>
+            <p><strong>Characteristics:</strong></p>
+            <ul>
+                <% if (plantsighting.plantCharacteristics.flowers) { %><li>Flowers</li><% } %>
+                <% if (plantsighting.plantCharacteristics.leaves) { %><li>Leaves</li><% } %>
+                <% if (plantsighting.plantCharacteristics.fruitsOrSeeds) { %><li>Fruits or Seeds</li><% } %>
+                <li>Sun Exposure: <%= plantsighting.plantCharacteristics.sunExposure %></li>
+                <% if (plantsighting.plantCharacteristics.flowerColor) { %><li>Flower Color: <%= plantsighting.plantCharacteristics.flowerColor %></li><% } %>
+            </ul>
+            <% if (plantsighting.photo) { %>
+                <img src="/<%= plantsighting.photo %>" width="200" height="200" alt="Plant Photo">
+            <% } %>
+            <p><strong>Create by:</strong> <%= plantsighting.nickname %></p>
+            <!-- Hidden span to store the nickname for JavaScript access -->
+            <span id="serverNickname" style="display: none;"><%= plantsighting.nickname %></span>
+            <p><strong>Status:</strong> <%= plantsighting.identification.status %></p>
+        </div>
+        <div class="col-md-5">
+            <div id="initial_form" style="display: block">
+                <p>Discussion Room</p>
+                <form onsubmit="return false;">
+                    <input type="hidden" id="name" name="name">
+                    <input type="hidden" id="roomNo" name="roomNo" value="<%= plantsighting._id %>">
+                    <button id="connect" onclick="connectToRoom()">Join the Discussion</button>
                 </form>
+            </div>
+            <div id="chat_interface" style="display: none">
+                <div>
+                    <h1 id="discussiontitle">Discussion Board</h1>
+                </div>
+                <div id="history" class="boxed"></div>
+                <div id="input" class="bottom boxed">
+                    <form onsubmit="return false;" style="width: 100%">
+                        <p>
+                            <input type="hidden" id="plantSighting" name="plantSighting" value="<%= plantsighting._id %>">
+                            <div class="chat-container">
+                                <input type="text" id="text" class="chat-input" placeholder="Type your message here...">
+                                <button class="send-button" id="chat_send" onclick="sendChatText()">Send</button>
+                            </div>
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div id="buttonContainerChoose"></div>
-<!-- Modal -->
-<div class="modal fade" id="suggestNameModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">Suggested Names</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="updateNameForm" action="/display/<%= plantsighting._id %>/update-name" method="POST">
-                    <div class="mb-3">
-                        <label for="selectedName" class="form-label">Select a Suggested Name</label>
-                        <select class="form-select" id="selectedName" name="selectedName" required>
-                            <% if (plantsighting.suggest_name && plantsighting.suggest_name.length > 0) { %>
-                                <% plantsighting.suggest_name.forEach(function(name) { %>
-                                    <option value="<%= name %>"><%= name %></option>
-                                <% }); %>
-                            <% } else { %>
-                                <option>No suggested names available</option>
-                            <% } %>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Name</button>
-                </form>
+
+    <hr>
+    <div id="buttonContainerSuggest"></div>
+    <!-- <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest a Name</button> -->
+
+    <!-- Input Modal -->
+    <div class="modal fade" id="inputSuggestNameModal" tabindex="-1" aria-labelledby="inputModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inputModalLabel">Input Suggested Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="suggestNameForm" action="/display/<%= plantsighting._id %>/add-suggest-name" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="suggestedName" class="form-label">Suggested Name</label>
+                            <input type="text" class="form-control" id="suggestedName" name="suggestedName" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    <div id="buttonContainerChoose"></div>
+    <!-- Modal -->
+    <div class="modal fade" id="suggestNameModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Suggested Names</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateNameForm" action="/display/<%= plantsighting._id %>/update-name" method="POST">
+                        <div class="mb-3">
+                            <label for="selectedName" class="form-label">Select a Suggested Name</label>
+                            <select class="form-select" id="selectedName" name="selectedName" required>
+                                <% if (plantsighting.suggest_name && plantsighting.suggest_name.length > 0) { %>
+                                    <% plantsighting.suggest_name.forEach(function(name) { %>
+                                        <option value="<%= name %>"><%= name %></option>
+                                    <% }); %>
+                                <% } else { %>
+                                    <option>No suggested names available</option>
+                                <% } %>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Name</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <a href="/add"><p>Add New Plant Sighting</p></a>
 </div>
-
-<hr>
-<a href="/add"><p>Add New Plant Sighting</p></a>
-
-
-</body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/javascripts/display.js"></script>
 <script src="/javascripts/connectAfterNickname.js"></script>
+</body>
 </html>
-
-
