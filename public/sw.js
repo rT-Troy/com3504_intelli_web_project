@@ -12,7 +12,6 @@ self.addEventListener('install', event => {
             cache.addAll([
                 '/',
                 '/add',
-                '/javascripts/index.js',
                 '/javascripts/idb-utility.js',
                 '/javascripts/camera.js',
                 '/javascripts/add.js',
@@ -73,15 +72,17 @@ self.addEventListener('sync', event => {
                     const formData = new URLSearchParams();
 
                     // Iterate over the properties of the JSON object and append them to FormData
-                    formData.append("nickname", syncAdd.nickname);
+                    for (const key in syncAdd) {
+                        if (syncAdd.hasOwnProperty(key)) {
+                            formData.append(key, syncAdd[key]);
+                        }
+                    }
 
                     // Fetch with FormData instead of JSON
-                    fetch('http://localhost:3000/add', {
+                    fetch('http://localhost:3000/add-todo', {
                         method: 'POST',
                         body: formData,
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
+                        // file: myImg,
                     }).then(() => {
                         console.log('Service Worker: Syncing new Add: ', syncAdd, ' done');
                         deleteSyncAddFromIDB(syncPostDB,syncAdd.id);

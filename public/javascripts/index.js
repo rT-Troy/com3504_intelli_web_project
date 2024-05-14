@@ -1,3 +1,34 @@
+// Function to insert a add item into the list
+const insertAddInList = (add) => {
+    if (add.nickname) {
+        console.log("InsertAddInList", add)
+        const copy = document.getElementById("add_template").cloneNode()
+        copy.removeAttribute("id") // otherwise this will be hidden as well
+        copy.innerText = add.nickname
+        copy.setAttribute("data-add-id", add._id)
+
+        // Insert sorted on string text order - ignoring case
+        const addlist = document.getElementById("add_list")
+        console.log("List element found:", addlist);
+        const children = addlist.querySelectorAll("li[data-add-id]")
+        let inserted = false
+        for (let i = 0; (i < children.length) && !inserted; i++) {
+            const child = children[i]
+            const copy_text = copy.innerText.toUpperCase()
+            const child_text = child.innerText.toUpperCase()
+            console.log("copy_text: " + copy_text)
+            if (copy_text < child_text) {
+                addlist.insertBefore(copy, child)
+                inserted = true
+            }
+        }
+        if (!inserted) { // Append child
+            addlist.appendChild(copy)
+        }
+    }
+}
+
+
 // Register service worker to control making site work offline
 window.onload = function () {
     if ('serviceWorker' in navigator) {
@@ -35,16 +66,29 @@ window.onload = function () {
         }
     }
     if (navigator.onLine) {
-        fetch('http://localhost:3000/add')
+        fetch('http://localhost:3000/plantsightings')
             .then(function (res) {
                 return res.json();
+            }).then(function (newAdds) {
+            console.log("cool:", newAdds);
+            openAddsIDB().then((db) => {
+                insertAddInList(db, newAdds)
+                deleteAllExistingAddsFromIDB(db).then(() => {
+                    addNewAddsToIDB(db, newAdds).then(() => {
+                        console.log("All new todos added to IDB")
+                    })
+                });
+            });
             })
 
     } else {
         console.log("Offline mode")
-        fetch('http://localhost:3000/add')
-            .then(function (res) {
-                return res.json();
-            })
+        openAddsIDB().then((db) => {
+            getAllAdds(db).then((adds) => {
+                for (const add of adds) {
+                    insertAddInList(adds)
+                }
+            });
+        });
     }
 }

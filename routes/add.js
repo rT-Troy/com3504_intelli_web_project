@@ -28,16 +28,18 @@ router.get('/add', function(req, res, next) {
     res.render('add', { title: 'New PlantSight Form' });
 });
 
-router.post('/add', upload.single('myImg'), function (req, res, next) {
+router.post('/add-todo', upload.single('myImg'), function (req, res, next) {
     let formData = req.body;
+    console.log("Form data received");
     let photoPath;
 
     if (req.file) {
 
         photoPath = req.file.path;
+        console.log("File uploaded to:", photoPath);
         processFormData();
     } else if (formData.photo) {
-
+        console.log("WEAT: formData.photo");
         const base64Data = formData.photo.replace(/^data:image\/\w+;base64,/, "");
         const buffer = Buffer.from(base64Data, 'base64');
         photoPath = path.join('public/images/uploads', `photo-${Date.now()}.jpg`);
@@ -64,10 +66,9 @@ router.post('/add', upload.single('myImg'), function (req, res, next) {
     }
 
     function processFormData() {
-
+        console.log("PROCESSING!!!");
         let result = plantsightings.create(formData, photoPath);
         console.log(result);
-        res.redirect('/');
     }
 });
 
