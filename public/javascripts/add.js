@@ -10,13 +10,15 @@ const addNewSlightsButtonEventListener = () => {
     const sunExposure = document.getElementById('sunExposure').value;
     const photo = document.getElementById('photo').value;
     const myImg = document.getElementById('myImg').value;
-    const locationString = document.getElementById('location').value;
-    const coordinates = locationString.split(',').map(coord => parseFloat(coord.trim()));
+    // const locationString = document.getElementById('location').value;
+    // const coordinates = locationString.split(',').map(coord => parseFloat(coord.trim()));
+    // const location = {
+    //     type: 'Point',
+    //     coordinates: coordinates
+    // };
+    const location = document.getElementById('location').value;
     const identificationName = document.getElementById('identificationName').value;
-    const location = {
-        type: 'Point',
-        coordinates: coordinates
-    };
+
 
     const addItem = {
         nickname: nickname,
