@@ -55,9 +55,13 @@
                 <!--                identification name-->
                 <div class="mb-3">
                     <label for="identificationName" class="form-label">Identification Name:</label>
-                    <input class="form-control" list="plantNames" id="identificationName" name="identificationName" oninput="searchPlants(this.value)">
-                    <datalist id="plantNames"></datalist>
+                    <div class="input-group">
+                        <input class="form-control" type="text" id="identificationName" name="identificationName">
+                        <button type="button" class="btn btn-outline-secondary" onclick="searchPlants()">Search</button>
+                    </div>
                 </div>
+                <!-- Search Results -->
+                <div id="searchResults" class="mt-3"></div>
             </div>
 <!--            second column-->
             <div class="col-md-7">
@@ -182,16 +186,20 @@
     </script>
 
     <script>
-        function searchPlants(query) {
+        function searchPlants() {
+            const query = document.getElementById('identificationName').value;
             if (query.length < 3) return; // Only search if the query length is 3 or more to reduce requests
+
             axios.get(`/search-plants?query=${encodeURIComponent(query)}`)
                 .then(function (response) {
-                    const plantNames = document.getElementById('plantNames');
-                    plantNames.innerHTML = ''; // Clear previous options
+                    const searchResults = document.getElementById('searchResults');
+                    searchResults.innerHTML = ''; // Clear previous results
+
                     response.data.forEach(plant => {
-                        const option = document.createElement('option');
-                        option.value = plant.label;
-                        plantNames.appendChild(option);
+                        const plantDiv = document.createElement('div');
+                        plantDiv.className = 'plant-result';
+                        plantDiv.innerHTML = `<strong>${plant.label}</strong>: ${plant.description || 'No description available'}`;
+                        searchResults.appendChild(plantDiv);
                     });
                 })
                 .catch(function (error) {
