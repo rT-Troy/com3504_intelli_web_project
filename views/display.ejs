@@ -55,9 +55,8 @@
                         </div>
                     <% } %>
                 </div>
-                <div style="width:95%" class="map-box">
-                    <!--Need to display a map like the one in the add sighting page-->
-                    <!-- <p><strong>Location:</strong> Longitude: plantsighting.location.coordinates[0] , Latitude: plantsighting.location.coordinates[1] </p> -->
+                <div style="width:95%; height:400px;" class="map-box" id="map">
+                    <!--Need to display a map -->
                 </div>
             </div>
             <h3>Sighting Details</h3>
@@ -66,6 +65,8 @@
                 <div class="information-box"><strong>Plant Height:</strong> <%= plantsighting.plantSize.height %> meters</div>
                 <div class="information-box"><strong>Plant Spread:</strong> <%= plantsighting.plantSize.spread %> meters</div>
                 <div class="information-box"><strong>Sun Exposure:</strong> <%= plantsighting.plantCharacteristics.sunExposure %></div>
+                <span style="display: none;" id="latitude"><%= plantsighting.location.coordinates[1] %></span>
+                <span style="display: none;" id="longitude<%= plantsighting._id %>"><%= plantsighting.location.coordinates[0] %></span>
                 <% if (plantsighting.plantCharacteristics.flowers && plantsighting.plantCharacteristics.flowerColor) { %>
                     <div class="information-box"><strong>Flowers:</strong> <%= plantsighting.plantCharacteristics.flowerColor %></div><%
                 } else if (plantsighting.plantCharacteristics.flowers) { %>
@@ -222,4 +223,6 @@
 </script>
 
 </body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACCrpjG5YXtt4tCRmC4Gtb1OWqh8DRWoA&callback=initMap&v=weekly&libraries=marker" async defer></script>
+
 </html>

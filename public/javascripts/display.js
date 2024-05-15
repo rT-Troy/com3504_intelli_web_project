@@ -43,8 +43,52 @@ document.addEventListener('DOMContentLoaded', function () {
             db.close();  // Close the db when the transaction is done
         };
     };
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+    } else {
+        alert('Geolocation is not supported by your browser');
+    }
 });
 
 function openPopup(imageUrl) {
     window.open(imageUrl, '_blank');
+}
+
+function successFunction(position) {
+
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+
+    document.getElementById('latitude').innerText = latitude.toFixed(6);
+    document.getElementById('longitude').innerText = longitude.toFixed(6);
+
+    initMap(latitude, longitude);
+}
+
+function initMap() {
+
+    var latitude = parseFloat(document.getElementById('latitude').innerText);
+    var longitude = parseFloat(document.getElementById('longitude').innerText);
+
+
+    var center = {lat: latitude, lng: longitude};
+
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 8,
+        center: center
+    });
+
+
+    var marker = new google.maps.Marker({
+        position: center,
+        map: map
+    });
+}
+
+
+function errorFunction(error) {
+    console.error('Error Code = ' + error.code + ' - ' + error.message);
+    alert('Unable to retrieve your location');
 }
