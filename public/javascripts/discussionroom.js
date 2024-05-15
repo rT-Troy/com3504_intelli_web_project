@@ -73,6 +73,19 @@ function writeOnHistory(text) {
     messageDiv.classList.add('message'); // Add a class for styling
     messageDiv.innerHTML = text;; // Set the text content of the div
     history.appendChild(messageDiv); // Append the div to the history container
+
+    // Get the height of the parent container
+    let parentHeight = history.parentElement.clientHeight;
+
+    // Calculate 80% of the parent container's height
+    let height80Percent = parentHeight * 0.8;
+
+    // Check if the height exceeds a certain threshold
+    if (history.scrollHeight > height80Percent) {
+        history.style.overflowY = 'scroll'; // Add vertical scroll
+        history.style.height = height80Percent + 'px'; // Lock the height to 80% of the parent container's height
+    }
+
     document.getElementById('text').value = ''; // Clear the input field
 }
 
