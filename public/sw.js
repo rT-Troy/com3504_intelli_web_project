@@ -9,16 +9,16 @@ self.addEventListener('install', event => {
         console.log('Service Worker: Caching App Shell at the moment......');
         try {
             const cache = await caches.open("static");
-            await cache.addAll([
+            cache.addAll([
                 '/',
                 '/add',
-                '/javascripts/add.js',
-                '/javascripts/index.js',
                 '/javascripts/idb-utility.js',
                 '/javascripts/camera.js',
                 '/javascripts/discussionroom.js',
                 '/javascripts/distance.js',
                 '/javascripts/location.js',
+                '/javascripts/add.js',
+                '/javascripts/index.js',
                 '/stylesheets/style.css',
                 '/stylesheets/add.css'
             ]);
@@ -83,7 +83,6 @@ self.addEventListener('sync', event => {
                     fetch('http://localhost:3000/add-todo', {
                         method: 'POST',
                         body: formData,
-                        // file: myImg,
                     }).then(() => {
                         console.log('Service Worker: Syncing new Add: ', syncAdd, ' done');
                         console.log("id:" , syncAdd.id);

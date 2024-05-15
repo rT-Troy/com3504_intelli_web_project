@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
 
-    if (sortOrderSelect.value === 'distance' && !window.location.href.includes('locationFetched=true')) {
-        getLocationAndSubmitForm();
-    }
+    // if (sortOrderSelect.value === 'distance' && !window.location.href.includes('locationFetched=true')) {
+    //     getLocationAndSubmitForm();
+    // }
 });
 
 
