@@ -9,13 +9,13 @@ self.addEventListener('install', event => {
         console.log('Service Worker: Caching App Shell at the moment......');
         try {
             const cache = await caches.open("static");
-            cache.addAll([
+            await cache.addAll([
                 '/',
                 '/add',
-                '/display',
+                '/javascripts/add.js',
+                '/javascripts/index.js',
                 '/javascripts/idb-utility.js',
                 '/javascripts/camera.js',
-                '/javascripts/add.js',
                 '/javascripts/discussionroom.js',
                 '/javascripts/distance.js',
                 '/javascripts/location.js',
@@ -31,7 +31,7 @@ self.addEventListener('install', event => {
     })());
 });
 
-//clear cache on reload
+// clear cache on reload
 self.addEventListener('activate', event => {
 // Remove old caches
     event.waitUntil(
@@ -86,6 +86,7 @@ self.addEventListener('sync', event => {
                         // file: myImg,
                     }).then(() => {
                         console.log('Service Worker: Syncing new Add: ', syncAdd, ' done');
+                        console.log("id:" , syncAdd.id);
                         deleteSyncAddFromIDB(syncPostDB,syncAdd.id);
                         // Send a notification
                         self.registration.showNotification('Add Synced', {

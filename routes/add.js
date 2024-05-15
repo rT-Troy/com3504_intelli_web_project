@@ -39,7 +39,6 @@ router.post('/add-todo', upload.single('myImg'), function (req, res, next) {
         console.log("File uploaded to:", photoPath);
         processFormData();
     } else if (formData.photo) {
-        console.log("WEAT: formData.photo");
         const base64Data = formData.photo.replace(/^data:image\/\w+;base64,/, "");
         const buffer = Buffer.from(base64Data, 'base64');
         photoPath = path.join('public/images/uploads', `photo-${Date.now()}.jpg`);
@@ -66,7 +65,6 @@ router.post('/add-todo', upload.single('myImg'), function (req, res, next) {
     }
 
     function processFormData() {
-        console.log("PROCESSING!!!");
 
         let result = plantsightings.create(formData, photoPath);
         console.log(result);
