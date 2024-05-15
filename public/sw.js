@@ -12,6 +12,7 @@ self.addEventListener('install', event => {
             cache.addAll([
                 '/',
                 '/add',
+                '/display',
                 '/javascripts/idb-utility.js',
                 '/javascripts/camera.js',
                 '/javascripts/add.js',

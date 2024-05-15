@@ -1,32 +1,42 @@
 // Function to insert a add item into the list
-const insertAddInList = (add) => {
-    if (add.nickname) {
-        console.log("InsertAddInList", add)
-        const copy = document.getElementById("add_template").cloneNode()
-        copy.removeAttribute("id") // otherwise this will be hidden as well
-        copy.innerText = add.nickname
-        copy.setAttribute("data-add-id", add._id)
+function indexDisplayInsert(db, newAdds) {
+    const transaction = db.transaction(['adds'], 'readwrite');
+    const objectStore = transaction.objectStore('adds');
 
-        // Insert sorted on string text order - ignoring case
-        const addlist = document.getElementById("add_list")
-        console.log("List element found:", addlist);
-        const children = addlist.querySelectorAll("li[data-add-id]")
-        let inserted = false
-        for (let i = 0; (i < children.length) && !inserted; i++) {
-            const child = children[i]
-            const copy_text = copy.innerText.toUpperCase()
-            const child_text = child.innerText.toUpperCase()
-            console.log("copy_text: " + copy_text)
-            if (copy_text < child_text) {
-                addlist.insertBefore(copy, child)
-                inserted = true
-            }
-        }
-        if (!inserted) { // Append child
-            addlist.appendChild(copy)
-        }
-    }
+    // 清空容器内容
+    const container = document.querySelector('.row');
+    container.innerHTML = '';
+
+    newAdds.forEach(plantsighting => {
+        objectStore.put(plantsighting);
+
+        // 插入数据后立即更新HTML
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-sm-6 col-md-4 col-lg-3';
+
+        const link = document.createElement('a');
+        link.href = `/display/${plantsighting._id}`;
+
+        const img = document.createElement('img');
+        img.src = plantsighting.photo;
+        img.className = 'img-thumbnail';
+        img.width = 200;
+        img.height = 200;
+        img.alt = 'Plant Photo';
+
+        const p = document.createElement('p');
+        p.innerHTML = `<strong>Date Seen:</strong> ${new Date(plantsighting.dateSeen).toDateString()}`;
+
+        link.appendChild(img);
+        colDiv.appendChild(link);
+        colDiv.appendChild(p);
+        container.appendChild(colDiv);
+    });
+
+    return transaction.complete;
 }
+
+
 
 
 // Register service worker to control making site work offline
@@ -70,9 +80,8 @@ window.onload = function () {
             .then(function (res) {
                 return res.json();
             }).then(function (newAdds) {
-            console.log("cool:", newAdds);
             openAddsIDB().then((db) => {
-                insertAddInList(db, newAdds)
+                indexDisplayInsert(db, newAdds)
                 deleteAllExistingAddsFromIDB(db).then(() => {
                     addNewAddsToIDB(db, newAdds).then(() => {
                         console.log("All new todos added to IDB")
@@ -86,7 +95,7 @@ window.onload = function () {
         openAddsIDB().then((db) => {
             getAllAdds(db).then((adds) => {
                 for (const add of adds) {
-                    insertAddInList(adds)
+                    indexDisplayInsert(adds)
                 }
             });
         });

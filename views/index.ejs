@@ -88,25 +88,27 @@
 
 <!-- Plant Sightings Display -->
 <div class="container">
-    <div class="row">
-        <% data.forEach(plantsighting => { %>
-            <div class="col-sm-6 col-md-4 col-lg-3">
-                <a href="/display/<%= plantsighting._id %>"><img src="<%= plantsighting.photo %>" class="img-thumbnail" width="200" height="200" alt="Plant Photo"></a>
-                <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>
-                <% if (plantsighting.location && plantsighting.location.coordinates) { %>
-                    <!-- Hidden latitude and longitude -->
-                    <span style="display: none;" id="lat_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[1] %></span>
-                    <span style="display: none;" id="long_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[0] %></span>
-                <% } %>
-                <% if (sortOrder === 'distance' && plantsighting.distance != null) { %>
-                    <p><strong>Distance:</strong> <%= plantsighting.distance.toFixed(2) + ' km' %></p>
-                <% } %>
-            </div>
-        <% }); %>
-        <ol id="add_list">
-            <li id="add_template">Example Todo</li>
-        </ol>
+    <div class="row" id="add_list">
     </div>
+<!--    <div class="row">-->
+<!--        <% data.forEach(plantsighting => { %>-->
+<!--            <div class="col-sm-6 col-md-4 col-lg-3">-->
+<!--                <a href="/display/<%= plantsighting._id %>"><img src="<%= plantsighting.photo %>" class="img-thumbnail" width="200" height="200" alt="Plant Photo"></a>-->
+<!--                <p><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></p>-->
+<!--                <% if (plantsighting.location && plantsighting.location.coordinates) { %>-->
+<!--                    &lt;!&ndash; Hidden latitude and longitude &ndash;&gt;-->
+<!--                    <span style="display: none;" id="lat_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[1] %></span>-->
+<!--                    <span style="display: none;" id="long_<%= plantsighting._id %>"><%= plantsighting.location.coordinates[0] %></span>-->
+<!--                <% } %>-->
+<!--                <% if (sortOrder === 'distance' && plantsighting.distance != null) { %>-->
+<!--                    <p><strong>Distance:</strong> <%= plantsighting.distance.toFixed(2) + ' km' %></p>-->
+<!--                <% } %>-->
+<!--            </div>-->
+<!--        <% }); %>-->
+<!--&lt;!&ndash;        <ol id="add_list">&ndash;&gt;-->
+<!--&lt;!&ndash;            <li id="add_template">Example Todo</li>&ndash;&gt;-->
+<!--&lt;!&ndash;        </ol>&ndash;&gt;-->
+<!--    </div>-->
 
 </div>
 <hr>
