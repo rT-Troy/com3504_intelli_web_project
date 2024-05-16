@@ -7,3 +7,36 @@ a {
     color: #00B7FF;
 }
 
+.plant-result {
+    max-width: 400px;
+    margin-bottom: 10px;
+}
+.plant-result img {
+    width: 100px;
+    height: auto;
+}
+.plant-result .card-body {
+    padding: 10px;
+}
+.plant-result .card-title {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+.plant-result .card-text {
+    font-size: 0.875rem;
+}
+.plant-result .btn {
+    font-size: 0.875rem;
+    padding: 5px 10px;
+}
+
+.image-preview {
+    display:none;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+}
+
+.map{
+    height: 400px;
+}

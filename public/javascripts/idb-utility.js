@@ -10,10 +10,8 @@ const addNewSlightToSync = (syncAddIDB, items) => {
         const addRequest = addStore.add(addItems)
 
         addRequest.addEventListener("success", () => {
-            console.log("Added " + "#" + addRequest.result + ": " + addItems.nickname)
             const getRequest = addStore.get(addRequest.result)
             getRequest.addEventListener("success", () => {
-                console.log("Found " + JSON.stringify(getRequest.result))
                 // Send a sync message to the service worker
                 navigator.serviceWorker.ready.then((sw) => {
                     sw.sync.register("sync-add")
@@ -55,10 +53,8 @@ const addNewAddsToIDB = (addIDB, adds) => {
             return new Promise((resolveAdd, rejectAdd) => {
                 const addRequest = addStore.add(add);
                 addRequest.onsuccess = () => {
-                    console.log("Added to IDB", addRequest.result, ":", add.nickname);
                     const getRequest = addStore.get(addRequest.result);
                     getRequest.onsuccess = () => {
-                        console.log("Retrieved after add:", JSON.stringify(getRequest.result));
                         resolveAdd(getRequest.result); // Resolve with the retrieved object
                     };
                     getRequest.onerror = (event) => {

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var axios = require('axios');
 var plantsightings = require('../controllers/plantsightings')
 var multer = require('multer');
 const path = require('path');
@@ -25,7 +26,7 @@ let upload = multer({
 
 /* GET home page. */
 router.get('/add', function(req, res, next) {
-    res.render('add', { title: 'New PlantSight Form' });
+    res.render('add', { title: 'Add Plant Sighting' });
 });
 
 router.post('/add-todo', upload.single('myImg'), function (req, res, next) {
@@ -65,7 +66,7 @@ router.post('/add-todo', upload.single('myImg'), function (req, res, next) {
     }
 
     function processFormData() {
-
+        console.log(formData);
         let result = plantsightings.create(formData, photoPath);
         console.log(result);
     }
