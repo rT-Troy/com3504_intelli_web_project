@@ -106,23 +106,15 @@ a {
     cursor: pointer;
 }
 
-/* map box */
-.map-box {
-    width: 100%;
-    height: 200px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-/* image box */
-.image-box-container{
+/* image and map container */
+.image-map-box-container{
     display: flex;
     align-items: center;
     justify-content: space-between; /* Distribute items evenly */
     margin-bottom: 5px;
     margin-top: 10px;
 }
+/* image box */
 .image-container {
     width: 100%;
     height: 200px;
@@ -146,6 +138,15 @@ a {
     width: 100%;
     height: 100%;
     cursor: pointer;
+}
+/* map box */
+.map {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid #9FAFC1;
 }
 
 /* DBPedia plant searching function */
