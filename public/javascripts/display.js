@@ -1,3 +1,4 @@
+// Checks the user's nickname and displays buttons for name suggestion or selection accordingly
 document.addEventListener('DOMContentLoaded', function () {
     var request = indexedDB.open('MyDatabase', 2);  // Open the IndexedDB
 
@@ -43,52 +44,70 @@ document.addEventListener('DOMContentLoaded', function () {
             db.close();  // Close the db when the transaction is done
         };
     };
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-    } else {
-        alert('Geolocation is not supported by your browser');
-    }
 });
 
+// Opens the full image in a new tab
 function openPopup(imageUrl) {
     window.open(imageUrl, '_blank');
 }
 
-function successFunction(position) {
+// Function to search for plants using the DBpedia API
+function searchPlants() {
+    const query = document.getElementById('plantSearch').value; // Get the query from the input field
+    if (query.length < 3) return; // Only search if the query length is 3 or more to reduce requests
 
-    var latitude = position.coords.latitude;
-    var longitude = position.coords.longitude;
+    // Make a GET request to the search-plants endpoint with the query
+    axios.get(`/search-plants?query=${encodeURIComponent(query)}`)
+        .then(function (response) {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = ''; // Clear previous results
 
-    document.getElementById('latitude').innerText = latitude.toFixed(6);
-    document.getElementById('longitude').innerText = longitude.toFixed(6);
-
-    initMap(latitude, longitude);
+            // Iterate over the response data to create and append plant result elements
+            response.data.forEach(plant => {
+                const plantDiv = document.createElement('div');
+                plantDiv.className = 'plant-result card';
+                plantDiv.innerHTML = `
+                        <div class="row g-0">
+                            <div class="col-auto">
+                                <img src="${plant.thumbnail || '/images/default-plant.png'}" class="img-fluid rounded-start" alt="${plant.label}">
+                            </div>
+                            <div class="col">
+                                <div class="card-body">
+                                    <h5 class="card-title">${plant.label}</h5>
+                                    <p class="card-text">${plant.description}</p>
+                                    <a href="${plant.link}" class="btn btn-primary" target="_blank">Learn More</a>
+                                </div>
+                            </div>
+                        </div>`;
+                // Set the suggestedName input value when a plant result is clicked
+                plantDiv.onclick = function() {
+                    document.getElementById('suggestedName').value = plant.label;
+                };
+                searchResults.appendChild(plantDiv); // Append the plant result to the search results
+            });
+        })
+        .catch(function (error) {
+            console.error('Error fetching plant names:', error); // Log the error
+        });
 }
 
-function initMap() {
+// JavaScript function to handle name suggestion form submission
+function submitSuggestForm(event) {
+    event.preventDefault();
 
-    var latitude = parseFloat(document.getElementById('latitude').innerText);
-    var longitude = parseFloat(document.getElementById('longitude').innerText);
+    // Get the value of the suggested name input field
+    const newName = document.getElementById('suggestedName').value;
 
-
-    var center = {lat: latitude, lng: longitude};
-
-
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
-        center: center
-    });
-
-
-    var marker = new google.maps.Marker({
-        position: center,
-        map: map
-    });
+    // Check if the new name is provided
+    if (!newName) {
+        // Alerts the user that they need to suggest a name
+        const notification = document.getElementById('notification');
+        notification.textContent = 'Please provide a suggested name.';
+        notification.style.display = 'block';
+    } else {
+        document.getElementById('suggestNameForm').submit();
+    }
 }
 
-
-function errorFunction(error) {
-    console.error('Error Code = ' + error.code + ' - ' + error.message);
-    alert('Unable to retrieve your location');
-}
+// Add event listener to the name suggestion form submit button
+document.getElementById('submitSuggestBtn').addEventListener('click', submitSuggestForm);

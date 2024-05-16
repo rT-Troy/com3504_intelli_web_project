@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/add.css'/>
@@ -32,7 +33,7 @@
 <div class="container">
     <h1 class="text-center">Plant Sighting Form</h1>
     <br>
-    <form action="/add" method="POST" enctype="multipart/form-data">
+    <form action="/add" id="addSightingForm" method="POST" enctype="multipart/form-data">
         <div class="row">
 <!--            first column-->
             <div class="col-md-5">
@@ -145,72 +146,85 @@
     </form>
 </div>
     <script>
+        // Wait for the DOM to load before running the script
         document.addEventListener('DOMContentLoaded', function() {
-            var db; // Declare db at a higher scope
-            var request = indexedDB.open('MyDatabase', 1);
+            var db; // Declare a variable to store the IndexedDB instance
+            var request = indexedDB.open('MyDatabase', 1); // Open (or create) the 'MyDatabase' database
 
+            // Event triggered if the database needs to be upgraded (created or version changed)
             request.onupgradeneeded = function(event) {
-                var db = event.target.result; // Assign db on upgrade or creation
+                var db = event.target.result; // Get the database instance
+                // Create 'nicknames' object store if it doesn't exist
                 if (!db.objectStoreNames.contains('nicknames')) {
-                    db.createObjectStore('nicknames', {keyPath: 'id'});
+                    db.createObjectStore('nicknames', { keyPath: 'id' });
                 }
             };
 
+            // Event triggered if there's an error with the database request
             request.onerror = function(event) {
-                console.error("IndexedDB error:", event.target.errorCode);
+                console.error("IndexedDB error:", event.target.errorCode); // Log the error
             };
 
+            // Event triggered when the database is successfully opened
             request.onsuccess = function(event) {
-                db = event.target.result; // Also assign db on successful opening
+                db = event.target.result; // Get the database instance
 
+                // Start a transaction to read from the 'nicknames' store
                 var tx = db.transaction('nicknames', 'readonly');
                 var store = tx.objectStore('nicknames');
-                var getReq = store.get('userNickname');  // Retrieve the nickname from IndexedDB
+                var getReq = store.get('userNickname'); // Retrieve the nickname from IndexedDB
 
+                // Event triggered when the nickname is successfully retrieved
                 getReq.onsuccess = function() {
                     var nicknameInput = document.getElementById('nickname');
                     if (getReq.result) {
-                        nicknameInput.value = getReq.result.nickname;
+                        nicknameInput.value = getReq.result.nickname; // Set the nickname input value
                     } else {
                         console.log('No nickname found in IndexedDB.');
                     }
-                    nicknameInput.disabled = false;  // Enable input to ensure it is included in form submission
+                    nicknameInput.disabled = false; // Enable the input field
                 };
 
+                // Event triggered if there's an error fetching the nickname
                 getReq.onerror = function(event) {
                     console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
                 };
 
+                // Set up form submission listener once the transaction is complete
                 tx.oncomplete = function() {
                     setupFormListener(db);
                 };
             };
         });
 
+        // Function to set up form submission listener
         function setupFormListener(db) {
             var form = document.querySelector('form');
             form.addEventListener('submit', function(event) {
-                event.preventDefault();
+                event.preventDefault(); // Prevent the default form submission
                 var nickname = document.getElementById('nickname').value;
 
                 if (nickname) {
+                    // Start a transaction to write to the 'nicknames' store
                     var writeTx = db.transaction('nicknames', 'readwrite');
                     var writeStore = writeTx.objectStore('nicknames');
-                    writeStore.put({id: 'userNickname', nickname: nickname});
+                    writeStore.put({ id: 'userNickname', nickname: nickname }); // Save the nickname
 
+                    // Event triggered when the write transaction is complete
                     writeTx.oncomplete = function() {
                         console.log('Nickname saved to IndexedDB.');
-                        document.getElementById('nickname').disabled = false; // Ensure it's enabled before submission
-                        db.close(); // Close the db only after all operations, including the write, are complete
-                        form.submit(); // Now submit the form programmatically
+                        document.getElementById('nickname').disabled = false; // Enable the input field
+                        db.close(); // Close the database
+                        form.submit(); // Programmatically submit the form
                     };
 
+                    // Event triggered if there's an error saving the nickname
                     writeTx.onerror = function(event) {
                         console.error('Error saving nickname to IndexedDB:', event.target.errorCode);
                     };
                 } else {
                     // If the nickname is empty, submit the form directly
-                    db.close(); // Ensure to close db even if not writing anything
+                    db.close(); // Close the database
                     form.submit();
                 }
             });
@@ -218,15 +232,18 @@
     </script>
 
     <script>
+        // Function to search for plants using the DBpedia API
         function searchPlants() {
             const query = document.getElementById('plantSearch').value;
             if (query.length < 3) return; // Only search if the query length is 3 or more to reduce requests
 
+            // Make a GET request to the search-plants endpoint with the query
             axios.get(`/search-plants?query=${encodeURIComponent(query)}`)
                 .then(function (response) {
                     const searchResults = document.getElementById('searchResults');
                     searchResults.innerHTML = ''; // Clear previous results
 
+                    // Iterate over the response data to create and append plant result elements
                     response.data.forEach(plant => {
                         const plantDiv = document.createElement('div');
                         plantDiv.className = 'plant-result card';
@@ -243,6 +260,7 @@
                                     </div>
                                 </div>
                             </div>`;
+                        // Set the identificationName input value when a plant result is clicked
                         plantDiv.onclick = function() {
                             document.getElementById('identificationName').value = plant.label;
                         };
@@ -250,7 +268,7 @@
                     });
                 })
                 .catch(function (error) {
-                    console.error('Error fetching plant names:', error);
+                    console.error('Error fetching plant names:', error); // Log the error
                 });
         }
     </script>
@@ -333,6 +351,7 @@
 
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACCrpjG5YXtt4tCRmC4Gtb1OWqh8DRWoA&callback=initMap&v=weekly&libraries=marker" async defer></script>
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACCrpjG5YXtt4tCRmC4Gtb1OWqh8DRWoA&callback=initMap&v=weekly&libraries=marker" async defer></script>
+    <script src="/javascripts/add.js"></script>
+    <script src="/javascripts/idb-utility.js"></script>
 </html>
