@@ -50,17 +50,21 @@
         });
     });
 
+    // Route to handle POST requests for adding a suggested name to a plant sighting
     router.post('/display/:id/add-suggest-name', upload.none(), function(req, res) {
         console.log("Received body: ", req.body); // This will log the body of the request
 
+        // Extract the plant sighting ID and the new suggested name from the request
         const id = req.params.id;
         const newName = req.body.suggestedName;
 
+        // Check if the new name is provided
         if (!newName) {
             console.error("No new name provided");
             return res.status(400).send("No new name provided");
         }
 
+        // Add the suggested name to the plant sighting
         plantsightings.addSuggestName(id, newName).then((updatedDocument) => {
             console.log("Updated document: ", updatedDocument);
             res.redirect('/display/' + id);
