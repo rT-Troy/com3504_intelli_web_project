@@ -7,27 +7,6 @@
     <link rel='stylesheet' href='/stylesheets/display.css' />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/javascripts/discussionroom.js"></script>
-    <style>
-        .plant-result {
-            max-width: 400px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .plant-result img {
-            width: 100px;
-            height: auto;
-        }
-        .plant-result .card-body {
-            padding: 10px;
-        }
-        .plant-result .card-title {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-        .plant-result .card-text {
-            font-size: 0.875rem;
-        }
-    </style>
 </head>
 <body onload="init()">
 <div class="page-container">
@@ -36,6 +15,7 @@
         <div class="col-md-7">
             <h2>Sighting Report by <%= plantsighting.nickname %></h2>
             <div class="flex-container">
+                <!--Displays different message depending on identification status-->
                 <% if (plantsighting.identification.status === "completed") { %>
                     <div style="flex: 1;">The author of this post has identified the plant as: <%= title %>.</div><%
                 } else { %>
@@ -60,6 +40,7 @@
                     <!-- <p><strong>Location:</strong> Longitude: plantsighting.location.coordinates[0] , Latitude: plantsighting.location.coordinates[1] </p> -->
                 </div>
             </div>
+            <!--Displays the information in columns-->
             <h3>Sighting Details</h3>
             <div class="flex-container" id="characteristics">
                 <div class="information-box"><strong>Date Seen:</strong> <%= plantsighting.dateSeen.toDateString() %></div>
@@ -116,6 +97,7 @@
     </div>
 
     <hr>
+    <!--Buttons to navigate to other pages-->
     <div class="flex-container">
         <a class="btn btn-outline-secondary" href="/add" role="button">Report New Plant Sighting</a>
         <a class="btn btn-outline-secondary" href="/" role="button">View All Plant Sightings</a>
@@ -194,47 +176,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/javascripts/display.js"></script>
 <script src="/javascripts/connectAfterNickname.js"></script>
-<script>
-    // Function to search for plants using the DBpedia API
-    function searchPlants() {
-        const query = document.getElementById('plantSearch').value; // Get the query from the input field
-        if (query.length < 3) return; // Only search if the query length is 3 or more to reduce requests
 
-        // Make a GET request to the search-plants endpoint with the query
-        axios.get(`/search-plants?query=${encodeURIComponent(query)}`)
-            .then(function (response) {
-                const searchResults = document.getElementById('searchResults');
-                searchResults.innerHTML = ''; // Clear previous results
-
-                // Iterate over the response data to create and append plant result elements
-                response.data.forEach(plant => {
-                    const plantDiv = document.createElement('div');
-                    plantDiv.className = 'plant-result card';
-                    plantDiv.innerHTML = `
-                        <div class="row g-0">
-                            <div class="col-auto">
-                                <img src="${plant.thumbnail || '/images/default-plant.png'}" class="img-fluid rounded-start" alt="${plant.label}">
-                            </div>
-                            <div class="col">
-                                <div class="card-body">
-                                    <h5 class="card-title">${plant.label}</h5>
-                                    <p class="card-text">${plant.description}</p>
-                                    <a href="${plant.link}" class="btn btn-primary" target="_blank">Learn More</a>
-                                </div>
-                            </div>
-                        </div>`;
-                    // Set the suggestedName input value when a plant result is clicked
-                    plantDiv.onclick = function() {
-                        document.getElementById('suggestedName').value = plant.label;
-                    };
-                    searchResults.appendChild(plantDiv); // Append the plant result to the search results
-                });
-            })
-            .catch(function (error) {
-                console.error('Error fetching plant names:', error); // Log the error
-            });
-    }
-</script>
 
 
 </body>
