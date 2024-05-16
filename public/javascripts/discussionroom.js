@@ -48,8 +48,9 @@ function generateRoom() {
  */
 function sendChatText() {
     let chatText = document.getElementById('text').value;
-
-    socket.emit('sendChatMessage', roomNo, name, chatText);
+    if (chatText != ''){
+        socket.emit('sendChatMessage', roomNo, name, chatText);
+    }
 }
 
 /**
@@ -69,10 +70,22 @@ function connectToRoom() {
  */
 function writeOnHistory(text) {
     let history = document.getElementById('history');
-    let paragraph = document.createElement('p');
-    paragraph.innerHTML = text;
-    history.appendChild(paragraph);
-    document.getElementById('text').value = '';
+    let messageDiv = document.createElement('div'); // Create a div element
+    messageDiv.classList.add('message'); // Add a class for styling
+    messageDiv.innerHTML = text;; // Set the text content of the div
+    history.appendChild(messageDiv); // Append the div to the history container
+
+    let parentHeight = history.parentElement.parentElement.clientHeight;
+    let height80Percent = parentHeight * 0.8;
+
+    if (history.scrollHeight > height80Percent) {
+        history.style.overflowY = 'scroll'; // Add vertical scroll
+        history.style.height = height80Percent + 'px';
+    }
+
+    history.scrollTop = history.scrollHeight;
+
+    document.getElementById('text').value = ''; // Clear the input field
 }
 
 /**
@@ -83,7 +96,5 @@ function writeOnHistory(text) {
 function hideLoginInterface(room, userId) {
     document.getElementById('initial_form').style.display = 'none';
     document.getElementById('chat_interface').style.display = 'block';
-    document.getElementById('who_you_are').innerHTML= userId;
-    document.getElementById('in_room').innerHTML= ' '+room;
 }
 

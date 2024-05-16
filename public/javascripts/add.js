@@ -1,3 +1,68 @@
+document.addEventListener('DOMContentLoaded', function () {
+    var db; // Declare db at a higher scope
+    var request = indexedDB.open('MyDatabase', 2);
+
+    request.onupgradeneeded = function (event) {
+        var db = event.target.result; // Assign db on upgrade or creation
+        if (!db.objectStoreNames.contains('nicknames')) {
+            db.createObjectStore('nicknames', {keyPath: 'id'});
+        }
+    };
+    request.onerror = function (event) {
+        console.error("IndexedDB error:", event.target.errorCode);
+    };
+    request.onsuccess = function (event) {
+        db = event.target.result; // Also assign db on successful opening
+        var tx = db.transaction('nicknames', 'readonly');
+        var store = tx.objectStore('nicknames');
+        var getReq = store.get('userNickname');  // Retrieve the nickname from IndexedDB
+        getReq.onsuccess = function () {
+            var nicknameInput = document.getElementById('nickname');
+            if (getReq.result) {
+                nicknameInput.value = getReq.result.nickname;
+            } else {
+                console.log('No nickname found in IndexedDB.');
+            }
+            nicknameInput.disabled = false;  // Enable input to ensure it is included in form submission
+        };
+        getReq.onerror = function (event) {
+            console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
+        };
+        tx.oncomplete = function () {
+            setupFormListener(db);
+        };
+    };
+});
+
+function setupFormListener(db) {
+    var form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var nickname = document.getElementById('nickname').value;
+
+        if (nickname) {
+            var writeTx = db.transaction('nicknames', 'readwrite');
+            var writeStore = writeTx.objectStore('nicknames');
+            writeStore.put({id: 'userNickname', nickname: nickname});
+
+            writeTx.oncomplete = function () {
+                console.log('Nickname saved to IndexedDB.');
+                document.getElementById('nickname').disabled = false; // Ensure it's enabled before submission
+                db.close(); // Close the db only after all operations, including the write, are complete
+                form.submit(); // Now submit the form programmatically
+            };
+
+            writeTx.onerror = function (event) {
+                console.error('Error saving nickname to IndexedDB:', event.target.errorCode);
+            };
+        } else {
+            // If the nickname is empty, submit the form directly
+            db.close(); // Ensure to close db even if not writing anything
+            form.submit();
+        }
+    });
+}
+
 async function addTodo() {
     const nicknameElement = document.getElementById('nickname');
     const dateSeenElement = document.getElementById('dateSeen');
@@ -8,13 +73,11 @@ async function addTodo() {
     const leavesElement = document.getElementById('leaves');
     const fruitsOrSeedsElement = document.getElementById('fruitsOrSeeds');
     const sunExposureElement = document.getElementById('sunExposure');
-    // const myImgElement = document.getElementById('myImg');
     const locationElement = document.getElementById('location');
     const identificationNameElement = document.getElementById('identificationName');
-    // const photoElement = document.getElementById('myImg')
 
     if (!nicknameElement || !dateSeenElement || !descriptionElement || !heightElement || !spreadElement ||
-        !flowersElement || !leavesElement || !fruitsOrSeedsElement || !sunExposureElement  ||
+        !flowersElement || !leavesElement || !fruitsOrSeedsElement || !sunExposureElement ||
         !locationElement || !identificationNameElement) {
         console.error('One or more form elements are missing');
         return;
@@ -54,16 +117,6 @@ async function addTodo() {
     formData.append('location', locationElement.value);
     formData.append('identificationName', identificationNameElement.value);
 
-    // if (myImgElement.files.length > 0) {
-    //     const file = myImgElement.files[0];
-    //     const reader = new FileReader();
-        // reader.onloadend = () => {
-        //     addItem.photo = reader.result; // base64 encoded string
-
-            // Store data in IndexedDB for offline use
-
-
-
 
     openSyncAddsIDB().then((db) => {
         addNewSlightToSync(db, addItem).then(() => {
@@ -72,16 +125,16 @@ async function addTodo() {
             console.error('Failed to store data in IndexedDB:', error);
         });
     });
-    navigator.serviceWorker.ready.then(function(registration) {
+    navigator.serviceWorker.ready.then(function (registration) {
         return registration.sync.register('sync-tag');
-    }).then(function() {
+    }).then(function () {
         console.log('Background Sync Successful registration');
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.log('Background Sync registration failure', err);
     });
 
-            // Attempt to send data to the server
-            // formData.append('myImg', file);
+    // Attempt to send data to the server
+    // formData.append('myImg', file);
     try {
         const response = await fetch('/add-todo', {
             method: 'POST',
@@ -99,34 +152,18 @@ async function addTodo() {
     }
 
 }
-//             // Request notification permission
-//             Notification.requestPermission().then(function(permission) {
-//                 if (permission === 'granted') {
-//                     navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-//                         serviceWorkerRegistration.showNotification("Add App", {
-//                             body: "Add added! - " + formData.get('nickname')
-//                         }).then(r => console.log(r));
-//                     });
-//                 } else {
-//                     console.error('Notification permission not granted');
-//                 }
-//             });
-//         };
-//         reader.readAsDataURL(file); // Convert file to base64 string
-//     } else {
-//         console.error('No file selected');
-//     }
-// };
+
 
 window.onload = function () {
     // Add event listeners to buttons
-    const add_submit = document.getElementById("add_submit");
+    const add_submit = document.getElementById("submit");
     add_submit.addEventListener("click", addTodo);
     // {
-        // event.preventDefault(); // Prevent default form submission
-        // addNewSlightsButtonEventListener();
+    // event.preventDefault(); // Prevent default form submission
+    // addNewSlightsButtonEventListener();
     // });
 };
+
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();

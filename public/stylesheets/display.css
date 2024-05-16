@@ -1,3 +1,158 @@
-.form-control {
-    background-color: #e7e9ee;
+body {
+    padding: 50px;
+    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00B7FF;
+}
+
+.page-container {
+    background-color: #EFF0F4;
+    border: 2px solid #C9D3DD;
+    border-radius: 7px;
+    padding: 25px;
+}
+
+.col-md-7, .col-md-5 {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 15px; /* Adjust as needed */
+    padding-right: 15px; /* Adjust as needed */
+}
+
+.col-md-5 {
+    border-left: 1px solid #cccccc;
+}
+
+.col-md-5 {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+/* messages in the discussion board */
+.message {
+    background-color: white;
+    padding: 12px;
+    margin-bottom: 7px;
+    word-wrap: break-word;
+    overflow-y: auto;
+    max-height: 200px;
+    border-radius: 3px;
+}
+
+/* container which allows columns */
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between; /* Distribute items evenly */
+    margin-bottom: 5px;
+}
+
+.image-box-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribute items evenly */
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+
+.information-box {
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: #FFFFFF;
+    border: 2px solid #D6D6D6;
+    padding: 12px;
+    word-wrap: break-word;
+    overflow-y: auto;
+    max-height: 200px;
+    border-radius: 3px;
+}
+
+.description {
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: #FFFFFF;
+    border: 2px solid #D6D6D6;
+    padding: 12px;
+    word-wrap: break-word;
+    overflow-y: auto;
+    max-height: 200px;
+    border-radius: 3px;
+}
+
+
+@media (min-width: 576px) {
+    .information-box {
+        width: calc(49.5%); /* Set width to one-third minus margin */
+    }
+}
+
+@media (min-width: 1310px) {
+    .information-box {
+        width: calc(33%); /* Set width to one-third minus margin */
+    }
+}
+
+
+/* discussion board chat input box */
+.chat-input {
+    border: 2px solid #343a40;
+    border-radius: 3px 0 0 3px;
+    padding: 10px;
+    font-size: 14px;
+    flex: 1; /* Take up remaining space */
+    margin-right: -2px;
+}
+.chat-input:focus {
+    outline: none;
+    border-color: #343a40;
+}
+
+/* discussion board chat input button */
+.send-button {
+    background-color: #343a40;
+    color: white;
+    border: 2px solid #343a40;
+    border-radius: 0 3px 3px 0;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.map-box {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* image stuff - cropping and hover to see full */
+.image-container {
+    width: 100%; /* Set width to 45% of its parent */
+    height: 200px; /* Set height to 200px or any desired height */
+    position: relative; /* Ensure relative positioning for absolute positioning of children */
+    overflow: hidden; /* Hide overflow */
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid #9FAFC1;
+}
+
+.cropped-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    position: absolute;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
