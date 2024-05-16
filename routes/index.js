@@ -5,50 +5,52 @@ var multer = require('multer');
 
 // storage defines the storage options to be used for file upload with multer
 var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/images/uploads/');
-  },
-  filename: function (req, file, cb) {
-    var original = file.originalname;
-    var file_extension = original.split(".");
-    // Make the file name the date + the file extension
-    filename =  Date.now() + '.' + file_extension[file_extension.length-1];
-    cb(null, filename);
-  }
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/uploads/');
+    },
+    filename: function (req, file, cb) {
+        var original = file.originalname;
+        var file_extension = original.split(".");
+        // Make the file name the date + the file extension
+        filename =  Date.now() + '.' + file_extension[file_extension.length-1];
+        cb(null, filename);
+    }
 });
-let upload = multer({ storage: storage });
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'New PlantSight Form' });
+    res.render('index', { title: 'View All Plantsightings' });
 });
 
-router.get('/display', function(req, res, next) {
-  let result = plantsightings.getAll()
-  result.then(plantsightings => {
-    let data = JSON.parse(plantsightings);
-    // Convert dateSeen from string to Date object for each plantsighting
-    data = data.map(sighting => ({
-      ...sighting,
-      dateSeen: new Date(sighting.dateSeen)
-    }));
 
-    console.log(data.length)
-    res.render('display', { title: 'View All PlantSights', data: data});
-  })
-});
 
-router.post('/add', upload.single('myImg'), function (req, res, next) {
-  if (!req.file) {
-    console.error('No file uploaded with the request!');
-    return res.sendStatus(400); // Bad request error code
-  }
 
-  let formData = req.body;
-  let photoPath = req.file.path;
-  let result = plantsightings.create(formData, photoPath);
-  console.log(result);
-  res.redirect('/');
-});
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2)
+    ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
+
+router.get('/plantsightings', function (req, res, next) {
+    plantsightings.getAll().then(adds => {
+        console.log(adds);
+        return res.status(200).send(adds);
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send(err);
+    });
+})
 
 module.exports = router;
+
