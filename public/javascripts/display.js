@@ -1,37 +1,42 @@
 // Checks the user's nickname and displays buttons for name suggestion or selection accordingly
-document.addEventListener('DOMContentLoaded', function () {
-    var request = indexedDB.open('MyDatabase', 2);  // Open the IndexedDB
+document.addEventListener('DOMContentLoaded', function() {
+    var dbVersion = 2; // Set the database version
 
-    request.onerror = function (event) {
-        console.error("IndexedDB error:", event.target.errorCode);
+    // Open the IndexedDB database 'MyDatabase'
+    var dbRequest = indexedDB.open('MyDatabase', dbVersion);
+
+    dbRequest.onupgradeneeded = function(eventloca) {
+        var db = event.target.result;
+        // Ensure the 'nicknames' object store is created
+        if (!db.objectStoreNames.contains('nicknames')) {
+            db.createObjectStore('nicknames', { keyPath: 'id' });
+            console.log('Object store "nicknames" created');
+        }
     };
 
-    request.onsuccess = function (event) {
+    dbRequest.onsuccess = function(event) {
         var db = event.target.result;
-        var tx = db.transaction('nicknames', 'readonly');
-        var store = tx.objectStore('nicknames');
-        var getRequest = store.get('userNickname');  // Get the 'userNickname' from the store
 
-        getRequest.onsuccess = function () {
+        var transaction = db.transaction('nicknames', 'readonly');
+        var store = transaction.objectStore('nicknames');
+        var getRequest = store.get('userNickname');
+
+        getRequest.onsuccess = function() {
             var storedNickname = getRequest.result ? getRequest.result.nickname : '';
-            var serverNickname = document.getElementById('serverNickname').textContent.trim();  // Read the server-side injected nickname
+            var serverNickname = document.getElementById('serverNickname').textContent.trim(); // Read the server-side injected nickname
 
-            var localNickname = storedNickname.trim();
-            console.log("Local Nickname: ", localNickname);
-            console.log("Server Nickname: ", serverNickname);
-
-            if (localNickname !== serverNickname || localNickname === '') {
-
-                var buttonContainer = document.getElementById('buttonContainerSuggest');
-                var buttonHTML = `<button type="button" class="btn btn-primary" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest Identification</button>`;
-                buttonContainer.innerHTML = buttonHTML;  // Insert the button into the container
-
+            if (!storedNickname) {
+                window.location.href = '/nickname'; // Redirect to the nickname page if no nickname is stored
             } else {
+                var buttonContainer = storedNickname !== serverNickname || !storedNickname ?
+                    document.getElementById('buttonContainerSuggest') :
+                    document.getElementById('buttonContainerChoose');
 
-                console.log("should display button");
-                var buttonContainer = document.getElementById('buttonContainerChoose');
-                var buttonHTML = `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suggestNameModal">User Suggested Names</button>`;
-                buttonContainer.innerHTML = buttonHTML;  // Insert the button into the container
+                var buttonHTML = storedNickname !== serverNickname || !storedNickname ?
+                    `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputSuggestNameModal">Suggest Identification</button>` :
+                    `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suggestNameModal">User Suggested Names</button>`;
+
+                buttonContainer.innerHTML = buttonHTML; // Insert the button into the container
             }
 
         };
@@ -40,11 +45,16 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
         };
 
-        tx.oncomplete = function () {
-            db.close();  // Close the db when the transaction is done
+        transaction.oncomplete = function() {
+            db.close(); // Close the db when the transaction is done
         };
     };
+
+    dbRequest.onerror = function(event) {
+        console.error("IndexedDB error:", event.target.errorCode);
+    };
 });
+
 
 // Opens the full image in a new tab
 function openPopup(imageUrl) {
