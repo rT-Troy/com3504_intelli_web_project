@@ -63,7 +63,6 @@ window.onload = function () {
                 if (permission === "granted") {
                     navigator.serviceWorker.ready
                         .then(function (serviceWorkerRegistration) {
-                            serviceWorkerRegistration.sync.register('sync')
                             serviceWorkerRegistration.showNotification("Todo App",
                                 {body: "Notifications are enabled!"})
                                 .then(r =>

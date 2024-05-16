@@ -10,10 +10,8 @@ const addNewSlightToSync = (syncAddIDB, items) => {
         const addRequest = addStore.add(addItems)
 
         addRequest.addEventListener("success", () => {
-            console.log("Added " + "#" + addRequest.result + ": " + addItems.nickname)
             const getRequest = addStore.get(addRequest.result)
             getRequest.addEventListener("success", () => {
-                console.log("Found " + JSON.stringify(getRequest.result))
                 // Send a sync message to the service worker
                 navigator.serviceWorker.ready.then((sw) => {
                     sw.sync.register("sync-add")
