@@ -106,5 +106,15 @@ function deg2rad(deg) {
     return deg * (Math.PI/180)
 }
 
+router.get('/plantsightings', function (req, res, next) {
+    plantsightings.getAll().then(adds => {
+        console.log(adds);
+        return res.status(200).send(adds);
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send(err);
+    });
+})
+
 module.exports = router;
 

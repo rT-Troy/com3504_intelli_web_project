@@ -20,7 +20,7 @@ var storage = multer.diskStorage({
     }
 });
 let upload = multer({
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB
     storage: storage
 });
 
@@ -29,16 +29,17 @@ router.get('/add', function(req, res, next) {
     res.render('add', { title: 'Add Plant Sighting' });
 });
 
-router.post('/add', upload.single('myImg'), function (req, res, next) {
+router.post('/add-todo', upload.single('myImg'), function (req, res, next) {
     let formData = req.body;
+    console.log("Form data received");
     let photoPath;
 
     if (req.file) {
 
         photoPath = req.file.path;
+        console.log("File uploaded to:", photoPath);
         processFormData();
     } else if (formData.photo) {
-
         const base64Data = formData.photo.replace(/^data:image\/\w+;base64,/, "");
         const buffer = Buffer.from(base64Data, 'base64');
         photoPath = path.join('public/images/uploads', `photo-${Date.now()}.jpg`);
@@ -68,7 +69,6 @@ router.post('/add', upload.single('myImg'), function (req, res, next) {
         console.log(formData);
         let result = plantsightings.create(formData, photoPath);
         console.log(result);
-        res.redirect('/');
     }
 });
 

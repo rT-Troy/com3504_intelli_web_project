@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/add.css'/>
@@ -32,7 +33,7 @@
 <div class="container">
     <h1 class="text-center">Plant Sighting Form</h1>
     <br>
-    <form action="/add" method="POST" enctype="multipart/form-data">
+    <form action="/add" id="addSightingForm" method="POST" enctype="multipart/form-data">
         <div class="row">
 <!--            first column-->
             <div class="col-md-5">
@@ -333,6 +334,7 @@
 
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACCrpjG5YXtt4tCRmC4Gtb1OWqh8DRWoA&callback=initMap&v=weekly&libraries=marker" async defer></script>
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACCrpjG5YXtt4tCRmC4Gtb1OWqh8DRWoA&callback=initMap&v=weekly&libraries=marker" async defer></script>
+    <script src="/javascripts/add.js"></script>
+    <script src="/javascripts/idb-utility.js"></script>
 </html>
