@@ -3,16 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Open the IndexedDB database 'MyDatabase'
     var dbRequest = indexedDB.open('MyDatabase', dbVersion);
-    loadForm();
-    window.handleSortChange = function(select) {
-        var sortForm = document.getElementById('sortForm');
-        if (select.value === 'distance') {
-            getLocationAndSubmitForm();
-        } else {
-            sortForm.setAttribute('action', '/');
-            sortForm.submit();
-        }
-    };
+
     dbRequest.onupgradeneeded = function(event) {
         var db = event.target.result;
         // Ensure the 'nicknames' object store is created
@@ -133,43 +124,8 @@ function indexDisplayInsert(db, newAdds, sortOrder) {
     return transaction.complete;
 }
 
-function loadForm() {
-    var container = document.getElementById('sortFormContainer');
-    var sortOrder = 'newest';
-    var formHTML = `
-                <form action="/" method="GET" id="sortForm">
-                    <div class="form-group">
-                        <label for="sortOrder">Sort By:</label>
-                        <select name="sortOrder" id="sortOrder" class="form-control" onchange="handleSortChange(this)">
-                            <option value="newest" ${sortOrder === 'newest' ? 'selected' : ''}>Date (Newest)</option>
-                            <option value="oldest" ${sortOrder === 'oldest' ? 'selected' : ''}>Date (Oldest)</option>
-                            <option value="distance" ${sortOrder === 'distance' ? 'selected' : ''}>Distance</option>
-                        </select>
-                    </div>
-                </form>
-            `;
 
-    container.innerHTML = formHTML;
-}
 
-var sortForm = document.getElementById('sortForm');
-var sortOrderSelect = document.getElementById('sortOrder');
-function getLocationAndSubmitForm() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var currentURL = window.location.href;
-
-            if (!currentURL.includes('locationFetched=true')) {
-                var actionUrl = `${sortForm.getAttribute('action')}?lat=${position.coords.latitude}&long=${position.coords.longitude}&sortOrder=${sortOrderSelect.value}&locationFetched=true`;
-                window.location.href = actionUrl;
-            }
-        }, function(error) {
-            alert("Error getting location: " + error.message);
-        });
-    } else {
-        alert('Geolocation is not supported by this browser.');
-    }
-}
 
 // Register service worker to control making site work offline
 window.onload = function () {

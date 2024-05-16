@@ -160,12 +160,25 @@
                     <button id="myPlants" class="btn btn-light me-md-2">Show My Plants</button>
                     <button id="showAll" class="btn btn-light">Show All Plants</button>
                 </div>
-                <div class="col-auto" id="sortFormContainer">
-
+                <div class="col-auto">
+                    <form action="/" method="GET" id="sortForm">
+                        <div class="form-group">
+                            <label for="sortOrder">Sort By:</label>
+                            <select name="sortOrder" id="sortOrder" class="form-control" onchange="handleSortChange(this)">
+                                <option value="newest" <%= sortOrder === 'newest' ? 'selected' : '' %>>Date (Newest)</option>
+                                <option value="oldest" <%= sortOrder === 'oldest' ? 'selected' : '' %>>Date (Oldest)</option>
+                                <option value="distance" <%= sortOrder === 'distance' ? 'selected' : '' %>>Distance</option>
+                            </select>
+                        </div>
+                    </form>
                 </div>
 
             </div>
             <hr>
+<!--            <div class="d-grid gap-2 d-md-flex justify-content-md-end">-->
+<!--            <button id="myPlants" class="btn btn-primary me-md-2">Show My Plants</button>-->
+<!--            <button id="showAll" class="btn btn-secondary ">Show All Plants</button>-->
+<!--            </div>-->
 
             <div class="row" id="planrow">
 
@@ -179,7 +192,7 @@
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<!--<script src="/javascripts/distance.js"></script>-->
+<script src="/javascripts/distance.js"></script>
 <script src="/javascripts/add.js"></script>
 <script src="/javascripts/index.js"></script>
 <script src="/javascripts/idb-utility.js"></script>
