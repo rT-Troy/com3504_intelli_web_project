@@ -3,14 +3,12 @@ function indexDisplayInsert(db, newAdds) {
     const transaction = db.transaction(['adds'], 'readwrite');
     const objectStore = transaction.objectStore('adds');
 
-    // 清空容器内容
     const container = document.querySelector('.row');
     container.innerHTML = '';
 
     newAdds.forEach(plantsighting => {
         objectStore.put(plantsighting);
 
-        // 插入数据后立即更新HTML
         const colDiv = document.createElement('div');
         colDiv.className = 'col-sm-6 col-md-4 col-lg-3';
 
@@ -65,6 +63,7 @@ window.onload = function () {
                 if (permission === "granted") {
                     navigator.serviceWorker.ready
                         .then(function (serviceWorkerRegistration) {
+                            serviceWorkerRegistration.sync.register('sync')
                             serviceWorkerRegistration.showNotification("Todo App",
                                 {body: "Notifications are enabled!"})
                                 .then(r =>

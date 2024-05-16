@@ -55,10 +55,8 @@ const addNewAddsToIDB = (addIDB, adds) => {
             return new Promise((resolveAdd, rejectAdd) => {
                 const addRequest = addStore.add(add);
                 addRequest.onsuccess = () => {
-                    console.log("Added to IDB", addRequest.result, ":", add.nickname);
                     const getRequest = addStore.get(addRequest.result);
                     getRequest.onsuccess = () => {
-                        console.log("Retrieved after add:", JSON.stringify(getRequest.result));
                         resolveAdd(getRequest.result); // Resolve with the retrieved object
                     };
                     getRequest.onerror = (event) => {
