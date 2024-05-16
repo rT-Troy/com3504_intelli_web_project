@@ -135,6 +135,7 @@
             <div class="modal-body">
                 <form id="suggestNameForm" action="/display/<%= plantsighting._id %>/add-suggest-name" method="POST" enctype="multipart/form-data">
                     <!-- Input field for the suggested name, set to read-only -->
+                    <div id="notification" class="alert alert-danger" style="display: none; margin-bottom: 10px"></div>
                     <div class="mb-3">
                         <label for="suggestedName" class="form-label">Suggested Name</label>
                         <input type="text" class="form-control" id="suggestedName" name="suggestedName" readonly>
@@ -150,7 +151,7 @@
                     <!-- Container for displaying search results -->
                     <div id="searchResults" class="mt-3"></div>
                     <!-- Submit button for the form -->
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button id="submitSuggestBtn" type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>

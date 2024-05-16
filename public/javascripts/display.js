@@ -48,3 +48,26 @@ document.addEventListener('DOMContentLoaded', function () {
 function openPopup(imageUrl) {
     window.open(imageUrl, '_blank');
 }
+
+// JavaScript function to handle form submission
+function submitSuggestForm(event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Get the value of the suggested name input field
+    const newName = document.getElementById('suggestedName').value;
+
+    // Check if the new name is provided
+    if (!newName) {
+        // Display the notification message
+        const notification = document.getElementById('notification');
+        notification.textContent = 'Please provide a suggested name.';
+        notification.style.display = 'block';
+    } else {
+        // If the name is provided, submit the form
+        document.getElementById('suggestNameForm').submit();
+    }
+}
+
+// Add event listener to the form submit button
+document.getElementById('submitSuggestBtn').addEventListener('click', submitSuggestForm);
