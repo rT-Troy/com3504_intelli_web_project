@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3dc11c53-6d09-4386-bd5e-b21865545880" name="Changes" comment="change name">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="localstorage-v1" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2ddtWV8koC6zim9tkkYnLoZTL7h" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Node.js.index.js.executor": "Run",
+    "Node.js.sw.js.executor": "Run",
+    "Node.js.www.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.nodejs.core.library.configured.version": "20.3.0",
+    "javascript.nodejs.core.library.typings.version": "20.3.3",
+    "last_opened_file_path": "C:/Users/Lenovo/WebstormProjects/Web",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "web-ide.project.structure",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2023.3.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\WebstormProjects\Web\public" />
+      <recent name="C:\Users\Lenovo\WebstormProjects\Web\public\javascripts" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-WS-241.15989.105" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3dc11c53-6d09-4386-bd5e-b21865545880" name="Changes" comment="" />
+      <created>1710349814368</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1710349814368</updated>
+      <workItem from="1710349815435" duration="2945000" />
+      <workItem from="1710353346772" duration="3676000" />
+      <workItem from="1710368808891" duration="4154000" />
+      <workItem from="1710378191807" duration="160000" />
+      <workItem from="1710378361801" duration="4195000" />
+      <workItem from="1710383133633" duration="307000" />
+      <workItem from="1710418673355" duration="2420000" />
+      <workItem from="1710427232797" duration="518000" />
+      <workItem from="1710512208632" duration="5015000" />
+      <workItem from="1711115553222" duration="4417000" />
+      <workItem from="1711120041676" duration="3042000" />
+      <workItem from="1711556861665" duration="7620000" />
+      <workItem from="1712243159805" duration="484000" />
+      <workItem from="1713268755497" duration="50000" />
+      <workItem from="1713268899177" duration="5175000" />
+      <workItem from="1713541262634" duration="5053000" />
+      <workItem from="1713546688583" duration="1183000" />
+      <workItem from="1715281719782" duration="173000" />
+      <workItem from="1715281961794" duration="14148000" />
+      <workItem from="1715352497434" duration="22286000" />
+      <workItem from="1715453218802" duration="28910000" />
+      <workItem from="1715483876552" duration="5653000" />
+      <workItem from="1715536391098" duration="6055000" />
+      <workItem from="1715564380523" duration="1120000" />
+      <workItem from="1715612339273" duration="5245000" />
+      <workItem from="1715629386451" duration="10861000" />
+      <workItem from="1715789270771" duration="1286000" />
+      <workItem from="1715793501339" duration="19255000" />
+      <workItem from="1715828384211" duration="4402000" />
+      <workItem from="1715889793970" duration="399000" />
+      <workItem from="1715890214971" duration="685000" />
+    </task>
+    <task id="LOCAL-00001" summary="revert">
+      <option name="closed" value="true" />
+      <created>1715475997357</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1715475997357</updated>
+    </task>
+    <task id="LOCAL-00002" summary="restructure">
+      <option name="closed" value="true" />
+      <created>1715616535693</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1715616535693</updated>
+    </task>
+    <task id="LOCAL-00003" summary="restructure">
+      <option name="closed" value="true" />
+      <created>1715616598952</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1715616598952</updated>
+    </task>
+    <task id="LOCAL-00004" summary="save works">
+      <option name="closed" value="true" />
+      <created>1715811170874</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1715811170874</updated>
+    </task>
+    <task id="LOCAL-00005" summary="change name">
+      <option name="closed" value="true" />
+      <created>1715890024725</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1715890024726</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="revert" />
+    <MESSAGE value="restructure" />
+    <MESSAGE value="save works" />
+    <MESSAGE value="change name" />
+    <option name="LAST_COMMIT_MESSAGE" value="change name" />
+  </component>
+</project>
