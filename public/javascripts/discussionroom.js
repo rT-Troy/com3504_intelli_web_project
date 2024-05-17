@@ -48,6 +48,7 @@ function generateRoom() {
  */
 function sendChatText() {
     let chatText = document.getElementById('text').value;
+    document.getElementById('text').value = ''
     if (chatText != ''){
         let currentDate = new Date()
         socket.emit('sendChatMessage', roomNo, name, chatText, currentDate);
@@ -73,7 +74,7 @@ function writeOnHistory(text, createdAt) {
     let history = document.getElementById('history');
     let messageDiv = document.createElement('div'); // Create a div element
     messageDiv.classList.add('message'); // Add a class for styling
-    let options = { hour: 'numeric', minute: 'numeric', month: 'short', day: 'numeric' };
+    let options = { year: 'numeric', hour: 'numeric', minute: 'numeric', month: 'short', day: 'numeric' };
     let formattedDate = createdAt.toLocaleString('en-UK', options);
     messageDiv.innerHTML = '<div>' + text + '</div><div class="date"><span class="timestamp">' + formattedDate + '</span></div>'; // Set the text content of the div
     history.appendChild(messageDiv); // Append the div to the history container

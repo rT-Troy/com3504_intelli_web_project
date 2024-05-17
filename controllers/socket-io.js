@@ -32,6 +32,7 @@ exports.init = function(io) {
                 let message = new Message({
                     text: chatText,
                     user: userId,
+                    createdAt: createdAt,
                     plantSighting: roomNo
                 });
 
