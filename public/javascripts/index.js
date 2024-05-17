@@ -20,19 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
             var store = transaction.objectStore('nicknames');
             var getRequest = store.get('userNickname');
 
-            getRequest.onsuccess = function() {
-                var userNickname = getRequest.result ? getRequest.result.nickname : '';
-                var myPlantsButton = document.getElementById('myPlants');
-                if (myPlantsButton) {
-                    if (userNickname) {
-                        myPlantsButton.addEventListener('click', function() {
-                            window.location.href = `/?nickname=${userNickname}`;
-                        });
-                    } else {
-                        window.location.href = '/nickname';  // Redirect to the nickname setup page
-                    }
-                }
-            };
 
             getRequest.onerror = function() {
                 console.error('Error fetching nickname from IndexedDB');
@@ -56,12 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayOfflinePlantSightings();
     }
 
-    var showAllButton = document.getElementById('showAll');
-    if (showAllButton) {
-        showAllButton.addEventListener('click', function() {
-            window.location.href = '/';
-        });
-    }
+
 
     const filterForm = document.getElementById('filterForm');
     if (filterForm) {
