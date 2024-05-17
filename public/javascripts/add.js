@@ -156,7 +156,7 @@ async function addTodo() {
 
 window.onload = function () {
     // Add event listeners to buttons
-    const add_submit = document.getElementById("submit");
+    const add_submit = document.getElementById("add_submit");
     add_submit.addEventListener("click", addTodo);
     // {
     // event.preventDefault(); // Prevent default form submission
