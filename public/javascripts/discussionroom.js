@@ -24,10 +24,10 @@ function init() {
         }
     });
     // called when a message is received
-    socket.on('sendChatMessage', function (room, userId, chatText) {
+    socket.on('sendChatMessage', function (room, userId, chatText, createdAt) {
         let who = userId
         if (userId === name) who = 'Me';
-        writeOnHistory('<b>' + who + ':</b> ' + chatText);
+        writeOnHistory('<b>' + who + ':</b> ' + chatText, new Date(createdAt));
     });
 
 }
@@ -49,7 +49,8 @@ function generateRoom() {
 function sendChatText() {
     let chatText = document.getElementById('text').value;
     if (chatText != ''){
-        socket.emit('sendChatMessage', roomNo, name, chatText);
+        let currentDate = new Date()
+        socket.emit('sendChatMessage', roomNo, name, chatText, currentDate);
     }
 }
 
@@ -68,11 +69,13 @@ function connectToRoom() {
  * it appends the given html text to the history div
  * @param text: teh text to append
  */
-function writeOnHistory(text) {
+function writeOnHistory(text, createdAt) {
     let history = document.getElementById('history');
     let messageDiv = document.createElement('div'); // Create a div element
     messageDiv.classList.add('message'); // Add a class for styling
-    messageDiv.innerHTML = text;; // Set the text content of the div
+    let options = { hour: 'numeric', minute: 'numeric', month: 'short', day: 'numeric' };
+    let formattedDate = createdAt.toLocaleString('en-UK', options);
+    messageDiv.innerHTML = '<div>' + text + '</div><div class="date"><span class="timestamp">' + formattedDate + '</span></div>'; // Set the text content of the div
     history.appendChild(messageDiv); // Append the div to the history container
 
     let parentHeight = history.parentElement.parentElement.clientHeight;

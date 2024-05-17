@@ -13,10 +13,10 @@ exports.init = function(io) {
 
                 // Retrieve existing messages for the plant sighting from the database
                 try {
-                    const messages = await Message.find({ plantSighting: room }).exec();
+                    const messages = await Message.find({ plantSighting: room }).sort({ createdAt: 1 });
                     // Emit existing messages to the client to display as chat messages
                     messages.forEach(message => {
-                        socket.emit('sendChatMessage', room, message.user, message.text);
+                        socket.emit('sendChatMessage', room, message.user, message.text, message.createdAt);
                     });
                 } catch (err) {
                     console.error('Error retrieving existing messages:', err);
@@ -24,9 +24,9 @@ exports.init = function(io) {
             });
 
             // Handle the 'sendChatMessage' event from the client
-            socket.on('sendChatMessage', async function(roomNo, userId, chatText) {
+            socket.on('sendChatMessage', async function(roomNo, userId, chatText, createdAt) {
                 // Send the message to the chat
-                io.sockets.to(roomNo).emit('sendChatMessage', roomNo, userId, chatText);
+                io.sockets.to(roomNo).emit('sendChatMessage', roomNo, userId, chatText, createdAt);
 
                 // Create a new message instance using the provided data
                 let message = new Message({

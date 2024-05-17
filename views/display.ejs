@@ -68,8 +68,8 @@
             <div id="initial_form" style="display: block">
                 <!--Form to connect to the chat (should never be visible to a user)-->
                 <form onsubmit="return false;">
-                    <input type="hidden" id="name" name="name">
-                    <input type="hidden" id="roomNo" name="roomNo" value="<%= plantsighting._id %>">
+                    <input type="text" id="name" name="name">
+                    <input type="text" id="roomNo" name="roomNo" value="<%= plantsighting._id %>">
                     <button id="connect" onclick="connectToRoom()">Join the Discussion</button>
                 </form>
             </div>
