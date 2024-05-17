@@ -7,3 +7,6 @@ We will now outline the way to run our code.
 3. In the same terminal run 'npm start'
 
 4. Go to your desired browser and go to localhost:3000
+
+our github:
+https://github.com/rT-Troy/com3504_intelli_web_project
