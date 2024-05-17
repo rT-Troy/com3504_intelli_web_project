@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 matches = matches && sighting.plantCharacteristics.fruitsOrSeeds === hasFruitsOrSeeds;
             }
             if (filters.sunExposure) {
-                matches = matches && sighting.plantCharacteristics.sunExposure === filters.sunExposure;
+                matches = matches && sighting.plantCharacteristics.sunExposure === filters.sunExposure.toLowerCase();
             }
             return matches;
         });
