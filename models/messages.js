@@ -7,7 +7,7 @@ let messageSchema = new mongoose.Schema({
     user: { type: String, required: true }, // Reference to user who posted the comment
     createdAt: { type: Date, default: Date.now },
     plantSighting: { type: String, required: true }
-});
+})
 
 let Message = mongoose.model('Message', messageSchema);
 

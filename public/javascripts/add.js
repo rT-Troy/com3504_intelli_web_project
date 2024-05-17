@@ -139,22 +139,6 @@ async function addTodo() {
     } catch (err) {
         console.log('Background Sync registration failure', err);
     }
-
-    try {
-        const response = await fetch('/add-todo', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Todo added:', result);
-        } else {
-            console.error('Failed to add todo:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error adding todo:', error);
-    }
 }
 
 // window.onload = function () {
