@@ -67,7 +67,6 @@ function setupFormListener(db) {
         }
     });
 }
-
 async function addTodo() {
     const nicknameElement = document.getElementById('nickname');
     const dateSeenElement = document.getElementById('dateSeen');
@@ -81,6 +80,7 @@ async function addTodo() {
     const locationElement = document.getElementById('location');
     const identificationNameElement = document.getElementById('identificationName');
     const flowerColorElement = document.getElementById('flowerColor');
+    const imgElement = document.getElementById('photo');
 
     if (!nicknameElement || !dateSeenElement || !descriptionElement || !heightElement || !spreadElement ||
         !flowersElement || !leavesElement || !fruitsOrSeedsElement || !sunExposureElement ||
@@ -89,27 +89,50 @@ async function addTodo() {
         return;
     }
 
+    console.log(imgElement.value);
     const formData = new FormData();
     const fileInput = document.querySelector('input[type="file"]');
-    const base64File = await fileToBase64(fileInput.files[0]);
-    formData.append('photo', base64File);
 
-    const addItem = {
-        nickname: nicknameElement.value,
-        dateSeen: dateSeenElement.value,
-        description: descriptionElement.value,
-        height: heightElement.value,
-        spread: spreadElement.value,
-        flowers: flowersElement.checked,
-        leaves: leavesElement.checked,
-        fruitsOrSeeds: fruitsOrSeedsElement.checked,
-        sunExposure: sunExposureElement.value,
-        location: locationElement.value,
-        identificationName: identificationNameElement.value,
-        flowerColor: flowerColorElement.value,
-        photo: base64File,
-        photoPath: ''
-    };
+    let addItem;
+
+    if (fileInput && fileInput.files.length > 0) {
+        const base64File = await fileToBase64(fileInput.files[0]);
+        formData.append('photo', base64File);
+        addItem = {
+            nickname: nicknameElement.value,
+            dateSeen: dateSeenElement.value,
+            description: descriptionElement.value,
+            height: heightElement.value,
+            spread: spreadElement.value,
+            flowers: flowersElement.checked,
+            leaves: leavesElement.checked,
+            fruitsOrSeeds: fruitsOrSeedsElement.checked,
+            sunExposure: sunExposureElement.value,
+            location: locationElement.value,
+            identificationName: identificationNameElement.value,
+            flowerColor: flowerColorElement.value,
+            photo: base64File,
+            photoPath: ''
+        };
+    } else {
+        formData.append('photo', imgElement.value);
+        addItem = {
+            nickname: nicknameElement.value,
+            dateSeen: dateSeenElement.value,
+            description: descriptionElement.value,
+            height: heightElement.value,
+            spread: spreadElement.value,
+            flowers: flowersElement.checked,
+            leaves: leavesElement.checked,
+            fruitsOrSeeds: fruitsOrSeedsElement.checked,
+            sunExposure: sunExposureElement.value,
+            location: locationElement.value,
+            identificationName: identificationNameElement.value,
+            flowerColor: flowerColorElement.value,
+            photo: imgElement.value,
+            photoPath: ''
+        };
+    }
 
     formData.append('nickname', nicknameElement.value);
     formData.append('dateSeen', dateSeenElement.value);
@@ -127,9 +150,11 @@ async function addTodo() {
     try {
         const db = await openSyncAddsIDB();
         await addNewSlightToSync(db, addItem);
+        console.log(addItem.toString())
         console.log('Data stored in IndexedDB for offline use.');
     } catch (error) {
         console.error('Failed to store data in IndexedDB:', error);
+        console.error(formData);
     }
 
     try {
@@ -139,19 +164,10 @@ async function addTodo() {
     } catch (err) {
         console.log('Background Sync registration failure', err);
     }
+
 }
 
-// window.onload = function () {
-//     const add_submit = document.getElementById("add_submit");
-//     add_submit.addEventListener("click", function(event) {
-//         event.preventDefault();
-//         addTodo().then(() => {
-//             window.location.href = '/';
-//         }).catch((error) => {
-//             console.error('Error adding todo:', error);
-//         });
-//     });
-// };
+
 window.onload = function () {
     const add_submit = document.getElementById("add_submit");
     add_submit.addEventListener("click", addTodo);
@@ -167,3 +183,4 @@ function fileToBase64(file) {
         reader.readAsDataURL(file);
     });
 }
+
