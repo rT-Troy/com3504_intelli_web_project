@@ -20,7 +20,8 @@ self.addEventListener('install', event => {
                 '/javascripts/add.js',
                 '/javascripts/index.js',
                 '/stylesheets/style.css',
-                '/stylesheets/add.css'
+                '/stylesheets/add.css',
+                '/stylesheets/display.css'
             ]);
             console.log('Service Worker: App Shell Cached');
         }
@@ -78,9 +79,15 @@ self.addEventListener('sync', event => {
                             formData.append(key, syncAdd[key]);
                         }
                     }
-
+                    // Pre delete the sync idb, because the fetch may skip this step
+                    fetch('http://localhost:3000/plantsightings')
+                        .then(() => {
+                            deleteSyncAddFromIDB(syncPostDB, syncAdd.id);
+                        }).catch(() => {
+                        console.log('Service Worker: Syncing new failed, service offline');
+                    } )
                     // if(syncAdd.photoData) {
-                    //     // 假设 syncAdd.photo 是 base64 字符串
+                    //     // Assume syncAdd.photo is base64
                     //     formData.append('photoData', syncAdd.photo);
                     // }
 
@@ -88,17 +95,15 @@ self.addEventListener('sync', event => {
                     console.log('fetching post');
                     fetch('http://localhost:3000/add-todo', {
                         method: 'POST',
-                        body: formData,
-
+                        body: formData
                     }).then(() => {
-                        console.log('finish fetch post');
-                        deleteSyncAddFromIDB(syncPostDB,syncAdd.id);
+                        console.log('Fetch post successful!');
                         // Send a notification
-                        // self.registration.showNotification('Add Synced', {
-                        //     body: 'Add synced successfully!',
-                        // });
+                        self.registration.showNotification('Add Synced', {
+                            body: 'Add synced successfully!',
+                        });
                     }).catch((err) => {
-                        console.error('Service Worker: Syncing new Add: ', syncAdd, ' failed');
+                        console.log('Service Worker: Syncing new failed, service offline');
                     });
                 }
             });
