@@ -51,9 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
         fetchAndDisplayPlantSightings();
     } else {
         console.log("Offline mode");
-        openAddsIDB().then((db) => {
-            getAllAdds(db).then((plantSightings) => {
-                indexDisplayInsert(db, plantSightings, 'date'); // or 'distance' if needed
+        Promise.all([openAddsIDB(), openSyncAddsIDB()]).then(([addsDb, syncAddsDb]) => {
+            Promise.all([getAllAdds(addsDb), getAllSyncAdds(syncAddsDb)]).then(([addsSightings, syncAddsSightings]) => {
+                const combinedSightings = [...addsSightings, ...syncAddsSightings];
+                indexDisplayInsert(null, combinedSightings, 'date'); // or 'distance' if needed
             }).catch(err => {
                 console.error('Error fetching plant sightings from IndexedDB:', err);
             });
@@ -106,9 +107,7 @@ function fetchAndDisplayPlantSightings() {
         });
 }
 
-
-
-// Function to open the IndexedDB
+// Function to open the IndexedDB for 'adds'
 function openAddsIDB() {
     return new Promise((resolve, reject) => {
         const dbName = 'adds';
@@ -132,7 +131,31 @@ function openAddsIDB() {
     });
 }
 
-// Function to delete all existing records from the IndexedDB
+// Function to open the IndexedDB for 'sync-adds'
+function openSyncAddsIDB() {
+    return new Promise((resolve, reject) => {
+        const dbName = 'sync-adds';
+        const dbVersion = 1;
+        const request = indexedDB.open(dbName, dbVersion);
+
+        request.onupgradeneeded = function (event) {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('sync-adds')) {
+                db.createObjectStore('sync-adds', { keyPath: '_id' });
+            }
+        };
+
+        request.onsuccess = function (event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function (event) {
+            reject('Failed to open indexDB: ' + event.target.error);
+        };
+    });
+}
+
+// Function to delete all existing records from the 'adds' IndexedDB
 function deleteAllExistingAddsFromIDB(db) {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(['adds'], 'readwrite');
@@ -149,7 +172,7 @@ function deleteAllExistingAddsFromIDB(db) {
     });
 }
 
-// Function to add new records to the IndexedDB
+// Function to add new records to the 'adds' IndexedDB
 function addNewAddsToIDB(db, newAdds) {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(['adds'], 'readwrite');
@@ -169,17 +192,46 @@ function addNewAddsToIDB(db, newAdds) {
     });
 }
 
+// Function to get all records from the 'adds' IndexedDB
+function getAllAdds(db) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['adds'], 'readonly');
+        const objectStore = transaction.objectStore('adds');
+        const request = objectStore.getAll();
+
+        request.onsuccess = function (event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function (event) {
+            reject('Failed to fetch adds from indexDB: ' + event.target.error);
+        };
+    });
+}
+
+// Function to get all records from the 'sync-adds' IndexedDB
+function getAllSyncAdds(db) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['sync-adds'], 'readonly');
+        const objectStore = transaction.objectStore('sync-adds');
+        const request = objectStore.getAll();
+
+        request.onsuccess = function (event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function (event) {
+            reject('Failed to fetch sync-adds from indexDB: ' + event.target.error);
+        };
+    });
+}
+
 // Function to insert and display new plant sightings
 function indexDisplayInsert(db, newAdds) {
-    const transaction = db.transaction(['adds'], 'readwrite');
-    const objectStore = transaction.objectStore('adds');
-
     const container = document.getElementById("planrow");
     container.innerHTML = '';
 
     newAdds.forEach(plantsighting => {
-        objectStore.put(plantsighting);
-
         const colDiv = document.createElement('div');
         colDiv.className = 'col-sm-6 col-md-4 col-lg-3';
 
@@ -222,35 +274,7 @@ function indexDisplayInsert(db, newAdds) {
 
         container.appendChild(colDiv);
     });
-
-    transaction.oncomplete = function () {
-        console.log('Transaction completed: database modification finished.');
-    };
-
-    transaction.onerror = function (event) {
-        console.log('Transaction not opened due to error: ' + transaction.error);
-    };
-
-    return transaction.complete;
 }
-
-// Function to get all adds from IndexedDB
-function getAllAdds(db) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['adds'], 'readonly');
-        const objectStore = transaction.objectStore('adds');
-        const request = objectStore.getAll();
-
-        request.onsuccess = function (event) {
-            resolve(event.target.result);
-        };
-
-        request.onerror = function (event) {
-            reject('Failed to fetch adds from indexDB: ' + event.target.error);
-        };
-    });
-}
-
 
 // Register service worker to control making site work offline
 window.onload = function () {
@@ -279,10 +303,7 @@ window.onload = function () {
                     navigator.serviceWorker.ready
                         .then(function (serviceWorkerRegistration) {
                             serviceWorkerRegistration.showNotification("Todo App",
-                                {body: "Notifications are enabled!"})
-                                // .then(r =>
-                                //     console.log(r)
-                                // );
+                                {body: "Notifications are enabled!"});
                         });
                 }
             });
@@ -292,9 +313,10 @@ window.onload = function () {
         fetchAndDisplayPlantSightings();
     } else {
         console.log("Offline mode");
-        openAddsIDB().then((db) => {
-            getAllAdds(db).then((plantSightings) => {
-                indexDisplayInsert(db, plantSightings, 'date'); // or 'distance' if needed
+        Promise.all([openAddsIDB(), openSyncAddsIDB()]).then(([addsDb, syncAddsDb]) => {
+            Promise.all([getAllAdds(addsDb), getAllSyncAdds(syncAddsDb)]).then(([addsSightings, syncAddsSightings]) => {
+                const combinedSightings = [...addsSightings, ...syncAddsSightings];
+                indexDisplayInsert(null, combinedSightings, 'date'); // or 'distance' if needed
             }).catch(err => {
                 console.error('Error fetching plant sightings from IndexedDB:', err);
             });

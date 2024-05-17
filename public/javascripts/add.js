@@ -157,11 +157,10 @@ async function addTodo() {
 window.onload = function () {
     // Add event listeners to buttons
     const add_submit = document.getElementById("add_submit");
-    add_submit.addEventListener("click", addTodo);
-    // {
-    // event.preventDefault(); // Prevent default form submission
-    // addNewSlightsButtonEventListener();
-    // });
+    add_submit.addEventListener("click", function(event) {
+        addTodo();
+        window.location.href = '/';
+    });
 };
 
 function fileToBase64(file) {

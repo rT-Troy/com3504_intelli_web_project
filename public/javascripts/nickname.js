@@ -20,12 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             addNickname.onsuccess = function() {
                 console.log('Nickname saved to IndexedDB:', nickname);
-
-                // var getNick = store.get('userNickname');
-                // getNick.onsuccess = function() {
-                //     document.getElementById('nickname').value = getNick.result.nickname; // Update the form field
-                //     form.submit(); // Now submit the form
-                // };
                 window.location.href = '/'; // Redirect or handle the navigation as necessary
             };
 
