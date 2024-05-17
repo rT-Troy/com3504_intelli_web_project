@@ -8,14 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
             db.createObjectStore('nicknames', {keyPath: 'id'});
         }
     };
+
     request.onerror = function (event) {
         console.error("IndexedDB error:", event.target.errorCode);
     };
+
     request.onsuccess = function (event) {
         db = event.target.result; // Also assign db on successful opening
         var tx = db.transaction('nicknames', 'readonly');
         var store = tx.objectStore('nicknames');
         var getReq = store.get('userNickname');  // Retrieve the nickname from IndexedDB
+
         getReq.onsuccess = function () {
             var nicknameInput = document.getElementById('nickname');
             if (getReq.result) {
@@ -25,9 +28,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             nicknameInput.disabled = false;  // Enable input to ensure it is included in form submission
         };
+
         getReq.onerror = function (event) {
             console.error('Error fetching nickname from IndexedDB:', event.target.errorCode);
         };
+
         tx.oncomplete = function () {
             setupFormListener(db);
         };
@@ -75,6 +80,7 @@ async function addTodo() {
     const sunExposureElement = document.getElementById('sunExposure');
     const locationElement = document.getElementById('location');
     const identificationNameElement = document.getElementById('identificationName');
+    const flowerColorElement = document.getElementById('flowerColor');
 
     if (!nicknameElement || !dateSeenElement || !descriptionElement || !heightElement || !spreadElement ||
         !flowersElement || !leavesElement || !fruitsOrSeedsElement || !sunExposureElement ||
@@ -82,11 +88,11 @@ async function addTodo() {
         console.error('One or more form elements are missing');
         return;
     }
+
     const formData = new FormData();
     const fileInput = document.querySelector('input[type="file"]');
     const base64File = await fileToBase64(fileInput.files[0]);
     formData.append('photo', base64File);
-
 
     const addItem = {
         nickname: nicknameElement.value,
@@ -100,10 +106,10 @@ async function addTodo() {
         sunExposure: sunExposureElement.value,
         location: locationElement.value,
         identificationName: identificationNameElement.value,
-        photo: base64File, // Placeholder for the image base64 string
-        photoPath: '',
+        flowerColor: flowerColorElement.value,
+        photo: base64File,
+        photoPath: ''
     };
-
 
     formData.append('nickname', nicknameElement.value);
     formData.append('dateSeen', dateSeenElement.value);
@@ -116,25 +122,24 @@ async function addTodo() {
     formData.append('sunExposure', sunExposureElement.value);
     formData.append('location', locationElement.value);
     formData.append('identificationName', identificationNameElement.value);
+    formData.append('flowerColor', flowerColorElement.value);
 
+    try {
+        const db = await openSyncAddsIDB();
+        await addNewSlightToSync(db, addItem);
+        console.log('Data stored in IndexedDB for offline use.');
+    } catch (error) {
+        console.error('Failed to store data in IndexedDB:', error);
+    }
 
-    openSyncAddsIDB().then((db) => {
-        addNewSlightToSync(db, addItem).then(() => {
-            console.log('Data stored in IndexedDB for offline use.');
-        }).catch((error) => {
-            console.error('Failed to store data in IndexedDB:', error);
-        });
-    });
-    navigator.serviceWorker.ready.then(function (registration) {
-        return registration.sync.register('sync-tag');
-    }).then(function () {
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.sync.register('sync-tag');
         console.log('Background Sync Successful registration');
-    }).catch(function (err) {
+    } catch (err) {
         console.log('Background Sync registration failure', err);
-    });
+    }
 
-    // Attempt to send data to the server
-    // formData.append('myImg', file);
     try {
         const response = await fetch('/add-todo', {
             method: 'POST',
@@ -150,18 +155,23 @@ async function addTodo() {
     } catch (error) {
         console.error('Error adding todo:', error);
     }
-
 }
 
-
+// window.onload = function () {
+//     const add_submit = document.getElementById("add_submit");
+//     add_submit.addEventListener("click", function(event) {
+//         event.preventDefault();
+//         addTodo().then(() => {
+//             window.location.href = '/';
+//         }).catch((error) => {
+//             console.error('Error adding todo:', error);
+//         });
+//     });
+// };
 window.onload = function () {
-    // Add event listeners to buttons
     const add_submit = document.getElementById("add_submit");
-    add_submit.addEventListener("click", function(event) {
-        addTodo();
-        window.location.href = '/';
-    });
-};
+    add_submit.addEventListener("click", addTodo);
+}
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {

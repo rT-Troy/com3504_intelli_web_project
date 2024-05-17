@@ -15,7 +15,6 @@ self.addEventListener('install', event => {
                 '/javascripts/idb-utility.js',
                 '/javascripts/camera.js',
                 '/javascripts/discussionroom.js',
-                '/javascripts/distance.js',
                 '/javascripts/location.js',
                 '/javascripts/add.js',
                 '/javascripts/index.js',
@@ -141,3 +140,4 @@ self.addEventListener('sync', event => {
         });
     }
 });
+

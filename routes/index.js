@@ -5,7 +5,6 @@ var plantsightings = require('../controllers/plantsightings')
 // Define the GET route for the root URL
 router.get('/', function(req, res, next) {
     plantsightings.getAll().then(plantsighting => {
-        console.log(plantsighting);
         res.render('index', { title: 'Plant Sightings', plants: plantsighting });
 
     }).catch(err => {
@@ -16,7 +15,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/plantsightings', function(req, res, next) {
     plantsightings.getAll().then(plantsighting => {
-        console.log(plantsighting);
         return res.status(200).send(plantsighting);
 
     }).catch(err => {
