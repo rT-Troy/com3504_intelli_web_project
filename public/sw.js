@@ -9,7 +9,7 @@ self.addEventListener('install', event => {
         console.log('Service Worker: Caching App Shell at the moment......');
         try {
             const cache = await caches.open("static");
-            cache.addAll([
+            const urlsToCache = [
                 '/',
                 '/add',
                 '/javascripts/idb-utility.js',
@@ -21,13 +21,18 @@ self.addEventListener('install', event => {
                 '/stylesheets/style.css',
                 '/stylesheets/add.css',
                 '/stylesheets/display.css'
-            ]);
-            console.log('Service Worker: App Shell Cached');
-        }
-        catch{
-            console.log("error occured while caching...")
-        }
+            ];
 
+            const ids = await getAllIdsFromIndexedDB();
+            ids.forEach(id => {
+                urlsToCache.push(`/display/${id}`);
+            });
+
+            await cache.addAll(urlsToCache);
+            console.log('Service Worker: App Shell Cached');
+        } catch (error) {
+            console.log("Error occurred while caching...", error);
+        }
     })());
 });
 
@@ -76,16 +81,27 @@ self.addEventListener('fetch', event => {
                 }
             }
         })());
-    } else {
+    }else if (/^\/display\/.+/.test(url.pathname)) {
+        event.respondWith((async () => {
+            const cache = await caches.open("static");
+            const cachedResponse = await cache.match(event.request);
+            if (cachedResponse) {
+                console.log('Service Worker: Fetching from Cache:', event.request.url);
+                return cachedResponse;
+            }
+            console.log('Service Worker: Fetching from URL:', event.request.url);
+            return fetch(event.request);
+        })());
+    }else {
         // Existing fetch logic for other requests
         event.respondWith((async () => {
             const cache = await caches.open("static");
             const cachedResponse = await cache.match(event.request);
             if (cachedResponse) {
-                console.log('Service Worker: Fetching from Cache: ', event.request.url);
+                console.log('Service Worker: Fetching from Cache:', event.request.url);
                 return cachedResponse;
             }
-            console.log('Service Worker: Fetching from URL: ', event.request.url);
+            console.log('Service Worker: Fetching from URL:', event.request.url);
             return fetch(event.request);
         })());
     }
@@ -121,7 +137,7 @@ self.addEventListener('sync', event => {
                     //     formData.append('photoData', syncAdd.photo);
                     // }
 
-                    // Fetch with FormData instead of JSON
+                    // Fetch with FormData
                     console.log('fetching post');
                     fetch('http://localhost:3000/add-todo', {
                         method: 'POST',
