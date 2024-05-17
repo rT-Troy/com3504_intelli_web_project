@@ -39,8 +39,6 @@ exports.create = function (formData, photoPath) {
 
     // Save the plantsightings to the database and handle success or failure
     return plantsighting.save().then(plantsighting => {
-        // Log the created student
-        console.log(plantsighting);
 
         // Return the plantsightings data as a JSON string
         return JSON.stringify(plantsighting);

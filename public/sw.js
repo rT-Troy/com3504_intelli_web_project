@@ -49,17 +49,48 @@ self.addEventListener('activate', event => {
 
 // Fetch event to fetch from cache first
 self.addEventListener('fetch', event => {
-    event.respondWith((async () => {
-        const cache = await caches.open("static");
-        const cachedResponse = await cache.match(event.request);
-        if (cachedResponse) {
-            console.log('Service Worker: Fetching from Cache: ', event.request.url);
-            return cachedResponse;
-        }
-        console.log('Service Worker: Fetching from URL: ', event.request.url);
-        return fetch(event.request);
-    })());
+    const url = new URL(event.request.url);
+
+    // Check if the request is for the plant sightings API
+    if (url.pathname === '/plantsightings') {
+        event.respondWith((async () => {
+            try {
+                // Try to fetch from the network
+                const networkResponse = await fetch(event.request);
+                // Optionally, you can update the cache with the new data
+                const cache = await caches.open("dynamic");
+                cache.put(event.request, networkResponse.clone());
+                return networkResponse;
+            } catch (error) {
+                console.log('Service Worker: Fetching from Cache due to network failure:', event.request.url);
+                // If the network is unavailable, try to get the response from the cache
+                const cache = await caches.open("dynamic");
+                const cachedResponse = await cache.match(event.request);
+                if (cachedResponse) {
+                    return cachedResponse;
+                } else {
+                    // Return an empty response or a default fallback response
+                    return new Response(JSON.stringify([]), {
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                }
+            }
+        })());
+    } else {
+        // Existing fetch logic for other requests
+        event.respondWith((async () => {
+            const cache = await caches.open("static");
+            const cachedResponse = await cache.match(event.request);
+            if (cachedResponse) {
+                console.log('Service Worker: Fetching from Cache: ', event.request.url);
+                return cachedResponse;
+            }
+            console.log('Service Worker: Fetching from URL: ', event.request.url);
+            return fetch(event.request);
+        })());
+    }
 });
+
 
 //Sync event to sync the todos
 self.addEventListener('sync', event => {

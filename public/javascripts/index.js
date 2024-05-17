@@ -47,6 +47,21 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/error';  // Redirect to an error handling page
     };
 
+    if (navigator.onLine) {
+        fetchAndDisplayPlantSightings();
+    } else {
+        console.log("Offline mode");
+        openAddsIDB().then((db) => {
+            getAllAdds(db).then((plantSightings) => {
+                indexDisplayInsert(db, plantSightings, 'date'); // or 'distance' if needed
+            }).catch(err => {
+                console.error('Error fetching plant sightings from IndexedDB:', err);
+            });
+        }).catch(err => {
+            console.error('Error opening IndexedDB:', err);
+        });
+    }
+
     var showAllButton = document.getElementById('showAll');
     if (showAllButton) {
         showAllButton.addEventListener('click', function() {
@@ -59,8 +74,103 @@ document.getElementById('addNewPlantSighting').addEventListener('click', functio
     window.location.href = '/add';
 });
 
-// Function to insert a new plant sighting into the list and update the display
-function indexDisplayInsert(db, newAdds, sortOrder) {
+function fetchAndDisplayPlantSightings() {
+    fetch('http://localhost:3000/plantsightings')
+        .then(function (res) {
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
+        })
+        .then(function (newAdds) {
+            openAddsIDB().then((db) => {
+                indexDisplayInsert(db, newAdds);
+                deleteAllExistingAddsFromIDB(db).then(() => {
+                    addNewAddsToIDB(db, newAdds).then(() => {
+                        console.log("All new plant sightings added to IDB");
+                    });
+                });
+            });
+        })
+        .catch(function (error) {
+            console.error("Error fetching plant sightings:", error);
+            openAddsIDB().then((db) => {
+                getAllAdds(db).then((plantSightings) => {
+                    indexDisplayInsert(db, plantSightings, 'date');
+                }).catch(err => {
+                    console.error('Error fetching plant sightings from IndexedDB:', err);
+                });
+            }).catch(err => {
+                console.error('Error opening IndexedDB:', err);
+            });
+        });
+}
+
+
+
+// Function to open the IndexedDB
+function openAddsIDB() {
+    return new Promise((resolve, reject) => {
+        const dbName = 'adds';
+        const dbVersion = 1;
+        const request = indexedDB.open(dbName, dbVersion);
+
+        request.onupgradeneeded = function (event) {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('adds')) {
+                db.createObjectStore('adds', { keyPath: '_id' });
+            }
+        };
+
+        request.onsuccess = function (event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function (event) {
+            reject('Failed to open indexDB: ' + event.target.error);
+        };
+    });
+}
+
+// Function to delete all existing records from the IndexedDB
+function deleteAllExistingAddsFromIDB(db) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['adds'], 'readwrite');
+        const objectStore = transaction.objectStore('adds');
+        const request = objectStore.clear();
+
+        request.onsuccess = function () {
+            resolve();
+        };
+
+        request.onerror = function (event) {
+            reject('Failed to delete existing adds from indexDB: ' + event.target.error);
+        };
+    });
+}
+
+// Function to add new records to the IndexedDB
+function addNewAddsToIDB(db, newAdds) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['adds'], 'readwrite');
+        const objectStore = transaction.objectStore('adds');
+
+        newAdds.forEach(plantsighting => {
+            objectStore.put(plantsighting);
+        });
+
+        transaction.oncomplete = function () {
+            resolve();
+        };
+
+        transaction.onerror = function (event) {
+            reject('Failed to add new adds to indexDB: ' + transaction.error);
+        };
+    });
+}
+
+// Function to insert and display new plant sightings
+function indexDisplayInsert(db, newAdds) {
     const transaction = db.transaction(['adds'], 'readwrite');
     const objectStore = transaction.objectStore('adds');
 
@@ -113,18 +223,33 @@ function indexDisplayInsert(db, newAdds, sortOrder) {
         container.appendChild(colDiv);
     });
 
-    transaction.oncomplete = function() {
+    transaction.oncomplete = function () {
         console.log('Transaction completed: database modification finished.');
     };
 
-    transaction.onerror = function(event) {
+    transaction.onerror = function (event) {
         console.log('Transaction not opened due to error: ' + transaction.error);
     };
 
     return transaction.complete;
 }
 
+// Function to get all adds from IndexedDB
+function getAllAdds(db) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['adds'], 'readonly');
+        const objectStore = transaction.objectStore('adds');
+        const request = objectStore.getAll();
 
+        request.onsuccess = function (event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function (event) {
+            reject('Failed to fetch adds from indexDB: ' + event.target.error);
+        };
+    });
+}
 
 
 // Register service worker to control making site work offline
@@ -155,37 +280,26 @@ window.onload = function () {
                         .then(function (serviceWorkerRegistration) {
                             serviceWorkerRegistration.showNotification("Todo App",
                                 {body: "Notifications are enabled!"})
-                                .then(r =>
-                                    console.log(r)
-                                );
+                                // .then(r =>
+                                //     console.log(r)
+                                // );
                         });
                 }
             });
         }
     }
     if (navigator.onLine) {
-        fetch('http://localhost:3000/plantsightings')
-            .then(function (res) {
-                return res.json();
-            }).then(function (newAdds) {
-            openAddsIDB().then((db) => {
-                indexDisplayInsert(db, newAdds)
-                deleteAllExistingAddsFromIDB(db).then(() => {
-                    addNewAddsToIDB(db, newAdds).then(() => {
-                        console.log("All new todos added to IDB")
-                    })
-                });
-            });
-        })
-
+        fetchAndDisplayPlantSightings();
     } else {
-        console.log("Offline mode")
+        console.log("Offline mode");
         openAddsIDB().then((db) => {
-            getAllAdds(db).then((adds) => {
-                for (const add of adds) {
-                    indexDisplayInsert(adds)
-                }
+            getAllAdds(db).then((plantSightings) => {
+                indexDisplayInsert(db, plantSightings, 'date'); // or 'distance' if needed
+            }).catch(err => {
+                console.error('Error fetching plant sightings from IndexedDB:', err);
             });
+        }).catch(err => {
+            console.error('Error opening IndexedDB:', err);
         });
     }
 }
