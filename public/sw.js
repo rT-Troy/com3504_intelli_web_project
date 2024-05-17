@@ -20,7 +20,8 @@ self.addEventListener('install', event => {
                 '/javascripts/index.js',
                 '/stylesheets/style.css',
                 '/stylesheets/add.css',
-                '/stylesheets/display.css'
+                '/stylesheets/display.css',
+                '/javascripts/display.js'
             ];
 
             const ids = await getAllIdsFromIndexedDB();

@@ -35,3 +35,14 @@ exports.getAllForPlant = function (plantId) {
         return null;
     });
 };
+
+// Function to get all plant sightings without any filters or sorting
+exports.getAll = function() {
+    // Perform a query to find all documents in the messageModel collection
+    return messageModel.find({}).then(messages => {
+        return messages;
+    }).catch(err => {
+        console.error(err);
+        return [];
+    });
+};

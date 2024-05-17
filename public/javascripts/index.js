@@ -102,6 +102,24 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             displayOfflinePlantSightings(sortOrder, userLat, userLon);
         }
+        if (navigator.onLine) {
+            fetch('http://localhost:3000/messages')
+                .then(response => response.json())
+                .then(newMessages => {
+                    openMessagesIDB().then(db => {
+                        deleteAllExistingMessagesFromIDB(db).then(() => {
+                            addNewMessagesToIDB(db, newMessages).then(() => {
+                                console.log("All new messages added to IDB");
+                            });
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching plant sightings:', error);
+                });
+        } else {
+            displayOfflinePlantSightings(sortOrder, userLat, userLon);
+        }
     }
 
     function displayOfflinePlantSightings(sortOrder = 'newest', userLat = null, userLon = null) {
