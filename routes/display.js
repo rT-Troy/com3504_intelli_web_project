@@ -1,6 +1,7 @@
     var express = require('express');
     var router = express.Router();
     var plantsightings = require('../controllers/plantsightings')
+    var messages = require('../controllers/messages')
     var multer = require('multer');
     const plantsightingModel = require("../models/plantsightings");
 
@@ -99,6 +100,16 @@
             .catch(err => {
                 res.status(500).send("Error updating name: " + err.message);
             });
+    });
+
+    router.get('/messages', function(req, res, next) {
+        messages.getAll().then(messages => {
+            return res.status(200).send(messages);
+
+        }).catch(err => {
+            console.error(err);
+            res.status(500).send("Error retrieving plant sighting.");
+        });
     });
 
     module.exports = router;

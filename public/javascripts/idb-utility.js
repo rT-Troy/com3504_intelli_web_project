@@ -3,28 +3,24 @@ const addNewSlightToSync = (syncAddIDB, items) => {
     // Retrieve add text and add it to the IndexedDB
     const addItems = items
     // TODO:
-    if (true) {
-        const transaction = syncAddIDB.transaction(["sync-adds"], "readwrite")
-        const addStore = transaction.objectStore("sync-adds")
+    const transaction = syncAddIDB.transaction(["sync-adds"], "readwrite")
+    const addStore = transaction.objectStore("sync-adds")
 
-        const addRequest = addStore.add(addItems)
+    const addRequest = addStore.add(addItems)
 
-        addRequest.addEventListener("success", () => {
-            const getRequest = addStore.get(addRequest.result)
-            getRequest.addEventListener("success", () => {
-                // Send a sync message to the service worker
-                navigator.serviceWorker.ready.then((sw) => {
-                    sw.sync.register("sync-add")
-                }).then(() => {
-                    console.log("Sync registered");
-                }).catch((err) => {
-                    console.log("Sync registration failed: " + JSON.stringify(err))
-                })
+    addRequest.addEventListener("success", () => {
+        const getRequest = addStore.get(addRequest.result)
+        getRequest.addEventListener("success", () => {
+            // Send a sync message to the service worker
+            navigator.serviceWorker.ready.then((sw) => {
+                sw.sync.register("sync-add")
+            }).then(() => {
+                console.log("Sync registered");
+            }).catch((err) => {
+                console.log("Sync registration failed: " + JSON.stringify(err))
             })
         })
-    }else {
-        console.log("Please insert all information!")
-    }
+    })
 }
 
 function noNullItem(items) {
@@ -130,16 +126,6 @@ const getAllSyncAdds = (syncAddIDB) => {
         });
     });
 }
-
-// Function to delete a syn
-// const deleteSyncAddFromIDB = (syncAddIDB, id) => {
-//     const transaction = syncAddIDB.transaction(["sync-adds"], "readwrite")
-//     const addStore = transaction.objectStore("sync-adds")
-//     const deleteRequest = addStore.delete(id)
-//     deleteRequest.addEventListener("success", () => {
-//         console.log("Deleted " + id)
-//     })
-// }
 
 const deleteSyncAddFromIDB = (syncAddIDB, id) => {
     return new Promise((resolve, reject) => {

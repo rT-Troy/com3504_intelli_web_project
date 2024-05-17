@@ -58,7 +58,7 @@ self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
     // Check if the request is for the plant sightings API
-    if (url.pathname === '/plantsightings') {
+    if (url.pathname === '/plantsightings' || url.pathname === '/messages') {
         event.respondWith((async () => {
             try {
                 // Try to fetch from the network
