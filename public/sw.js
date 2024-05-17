@@ -143,7 +143,7 @@ self.addEventListener('sync', event => {
                     fetch('http://localhost:3000/add-todo', {
                         method: 'POST',
                         body: formData
-                    }).then(() => {
+                    }).then(async () => {
                         console.log('Fetch post successful!');
                         // Send a notification
                         self.registration.showNotification('Add Synced', {
