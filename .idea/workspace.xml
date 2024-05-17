@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="b963edf8-22a5-412c-aec9-5fdd40b7c08b" name="Changes" comment="add offline index">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/add.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/add.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/plantsightings.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/plantsightings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascripts/distance.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/distance.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/nickname.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/nickname.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/index.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

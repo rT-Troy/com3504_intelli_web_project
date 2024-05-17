@@ -82,27 +82,27 @@ exports.getSuggestions = function(id) {
     });
 };
 
-// Function to get all plant sightings with optional filters and sorting
-exports.getAllFiltered = function(filters = {}, sortOrder = 'newest') {
-    let sortQuery = sortOrder === 'newest' ? { dateSeen: -1 } : { dateSeen: 1 };
-    let query = {};
-
-    // Apply filters to the query object if provided
-    if (filters.flowers) query['plantCharacteristics.flowers'] = filters.flowers === 'true';
-    if (filters.leaves) query['plantCharacteristics.leaves'] = filters.leaves === 'true';
-    if (filters.fruitsOrSeeds) query['plantCharacteristics.fruitsOrSeeds'] = filters.fruitsOrSeeds === 'true';
-    if (filters.sunExposure) query['plantCharacteristics.sunExposure'] = filters.sunExposure;
-    if (filters.status) query['identification.status'] = filters.status;
-    if (filters.nickname) query['nickname'] = filters.nickname;  // Filter by nickname if provided
-
-    // Perform the query on the plantsightingModel, sort the results, and return them
-    return plantsightingModel.find(query).sort(sortQuery).then(plantsightings => {
-        return plantsightings;
-    }).catch(err => {
-        console.error(err);
-        return null;
-    });
-};
+// // Function to get all plant sightings with optional filters and sorting
+// exports.getAllFiltered = function(filters = {}, sortOrder = 'newest') {
+//     let sortQuery = sortOrder === 'newest' ? { dateSeen: -1 } : { dateSeen: 1 };
+//     let query = {};
+//
+//     // Apply filters to the query object if provided
+//     if (filters.flowers) query['plantCharacteristics.flowers'] = filters.flowers === 'true';
+//     if (filters.leaves) query['plantCharacteristics.leaves'] = filters.leaves === 'true';
+//     if (filters.fruitsOrSeeds) query['plantCharacteristics.fruitsOrSeeds'] = filters.fruitsOrSeeds === 'true';
+//     if (filters.sunExposure) query['plantCharacteristics.sunExposure'] = filters.sunExposure;
+//     if (filters.status) query['identification.status'] = filters.status;
+//     if (filters.nickname) query['nickname'] = filters.nickname;  // Filter by nickname if provided
+//
+//     // Perform the query on the plantsightingModel, sort the results, and return them
+//     return plantsightingModel.find(query).sort(sortQuery).then(plantsightings => {
+//         return plantsightings;
+//     }).catch(err => {
+//         console.error(err);
+//         return null;
+//     });
+// };
 
 // Function to get all plant sightings without any filters or sorting
 exports.getAll = function() {
@@ -114,11 +114,6 @@ exports.getAll = function() {
         return [];
     });
 };
-
-
-
-
-
 
 exports.addSuggestName = function(id, name) {
     return plantsightingModel.findByIdAndUpdate(id, {
