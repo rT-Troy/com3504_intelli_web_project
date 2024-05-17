@@ -206,3 +206,28 @@ function openSyncAddsIDB() {
         };
     });
 }
+
+// Get all id from indexedDB
+async function getAllIdsFromIndexedDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('adds', 1);
+
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            const transaction = db.transaction(['adds'], 'readonly');
+            const objectStore = transaction.objectStore('adds');
+            const getAllRequest = objectStore.getAll();
+
+            getAllRequest.onsuccess = function(event) {
+                resolve(event.target.result.map(item => item._id));
+            };
+
+            getAllRequest.onerror = function(event) {
+                reject('Error fetching IDs from IndexedDB');
+            };
+        };
+        request.onerror = function(event) {
+            reject('Error opening IndexedDB');
+        };
+    });
+}
